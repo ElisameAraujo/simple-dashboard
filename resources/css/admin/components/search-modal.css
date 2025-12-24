@@ -1,0 +1,79 @@
+.search-button button {
+    @apply btn btn-ghost border border-gray-300 cursor-pointer;
+}
+
+.modal-search .modal-box {
+    @apply p-0;
+}
+
+.modal-search > .modal__container {
+    @apply w-full max-w-xl rounded bg-base-100 shadow-2xl z-50;
+}
+
+.modal-search .modal__container .modal__input input {
+    @apply w-full bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none py-4;
+}
+
+.modal-search .modal__container .modal__input i,
+.modal-search .modal__container .modal__input svg {
+    @apply text-gray-400;
+}
+
+.modal-search .modal__input {
+    @apply flex items-center gap-2 bg-transparent text-gray-900 px-4 py-3;
+}
+
+/** Filtros **/
+.modal-search .modal__filters {
+    @apply flex items-center justify-start p-2 gap-2 text-sm text-gray-700;
+}
+
+.modal-search .modal__filters button.filter-button {
+    @apply bg-gray-200 px-2.5 py-2 rounded text-xs transition-default;
+}
+
+.modal-search .modal__filters button.filter-button:hover {
+    @apply bg-primary text-white cursor-pointer;
+}
+
+/** Lista de resultados **/
+.modal-search .modal__container > .modal-result__list {
+    @apply max-h-100 overflow-y-auto p-2.5 pt-0;
+}
+
+.modal-result__list > .modal-result__item {
+    @apply px-4 py-3 cursor-pointer grid-default p-0 rounded-md;
+}
+
+.modal-result__list > .modal-result__item:hover {
+    @apply bg-primary text-white transition-default;
+}
+
+.modal-result__list > .modal-result__item .thumbnail {
+    @apply col-span-1 flex items-center justify-center;
+}
+
+.modal-result__list > .modal-result__item .thumbnail img {
+    @apply w-10 h-10 rounded object-cover shadow;
+}
+
+.modal-result__list > .modal-result__item .thumbnail i,
+.modal-result__list > .modal-result__item .thumbnail svg {
+    @apply text-2xl;
+}
+
+.modal-result__list > .modal-result__item .result-text {
+    @apply col-span-11 flex flex-col justify-center;
+}
+
+.modal-result__list > .modal-result__item .result-text .result-location {
+    @apply text-xs text-gray-600 bg-gray-200/75 w-fit px-2 py-0.5 rounded-sm mt-1;
+}
+
+.modal-result__list > .modal-result__item:hover .result-text .result-location {
+    @apply bg-white;
+}
+
+.modal-result__list > .modal-result__item:last-child {
+    @apply rounded-b-sm;
+}
