@@ -21,10 +21,11 @@ class DateHelper
     protected static function applyLocale(CarbonInterface $date, ?string $locale = null): CarbonInterface
     {
         $locale = LocaleResolver::resolveLocale($locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
         $timezone = config('app.timezone', 'UTC');
 
         // Carrega traduções do arquivo dates.php
-        $translations = trans("dates", locale: $locale);
+        $translations = trans("dates", locale: $translationLocale);
 
         // Cacheia o translator para evitar reprocessamento
         if (!isset(self::$translatorCache[$locale])) {
@@ -61,7 +62,8 @@ class DateHelper
     public static function currentDate(?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.date", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.date", locale: $translationLocale);
 
         return self::applyLocale(Carbon::now(), $locale)->format($format);
     }
@@ -87,7 +89,8 @@ class DateHelper
     public static function fullExtendedDate(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.full_weekday", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.full_weekday", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)
             ->translatedFormat($format);
@@ -103,7 +106,8 @@ class DateHelper
     public static function currentFullDateWithHours(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.date_time_extended", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.date_time_extended", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)
             ->translatedFormat($format);
@@ -124,7 +128,7 @@ class DateHelper
         $now = CarbonImmutable::now();
 
         if ($target->equalTo($now)) {
-            return trans('dates.diff.now', locale: $locale);
+            return trans('dates.diff.now', locale: LocaleResolver::resolveTranslationLocale($locale));
         }
 
         $isFuture = $target->greaterThan($now);
@@ -143,7 +147,8 @@ class DateHelper
     public static function dateWithHoursAndSeconds(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.date_time_short_seconds", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.date_time_short_seconds", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
     }
@@ -158,7 +163,8 @@ class DateHelper
     public static function dateExcel(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.date_excel", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.date_excel", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
     }
@@ -173,7 +179,8 @@ class DateHelper
     public static function dateWithHours(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.date_time_short", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.date_time_short", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
     }
@@ -188,7 +195,8 @@ class DateHelper
     public static function simpleDate(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.date", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.date", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
     }
@@ -220,7 +228,8 @@ class DateHelper
     public static function shortDate(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.short_date", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.short_date", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
     }
@@ -232,7 +241,8 @@ class DateHelper
     public static function shortTime(string $date, ?string $locale = null): string
     {
         $locale = LocaleResolver::resolveLocale($locale);
-        $format = trans("dates.formats.short_time", locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $format = trans("dates.formats.short_time", locale: $translationLocale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
     }
@@ -252,21 +262,22 @@ class DateHelper
         $formattedDate = self::formatEmailDate($date, $locale);
         $relative = self::diffDatesHuman($date->toDateTimeString(), $locale);
 
-        return $formattedDate . ' ' . trans('dates.email.wrapper', ['relative' => $relative,], locale: $locale);
+        return $formattedDate . ' ' . trans('dates.email.wrapper', ['relative' => $relative,], locale: LocaleResolver::resolveTranslationLocale($locale));
     }
 
     /** === Private Functions === **/
     private static function formatEmailDate(Carbon $date, string $locale): string
     {
-        $weekdays = trans('dates.weekdays_short_capitalized', locale: $locale);
-        $months   = trans('dates.months_simple', locale: $locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
+        $weekdays = trans('dates.weekdays_short_capitalized', locale: $translationLocale);
+        $months   = trans('dates.months_simple', locale: $translationLocale);
 
         return trans('dates.email.format', [
             'weekday' => $weekdays[$date->dayOfWeek],
             'day'     => $date->day,
             'month'   => $months[$date->month - 1],
             'time'    => $date->format('H:i'),
-        ], locale: $locale);
+        ], locale: $translationLocale);
     }
 
     private static function diffUnit(CarbonImmutable $target, CarbonImmutable $now): array
@@ -292,20 +303,20 @@ class DateHelper
             }
         }
 
-        return trans('dates.diff.now', locale: $locale);
+        return trans('dates.diff.now', locale: LocaleResolver::resolveTranslationLocale($locale));
     }
 
     private static function formatTimeUnit(string $unit, int $value, string $locale): string
     {
         $key = $value === 1 ? 'one' : 'many';
 
-        return str_replace(':count', $value, trans("dates.diff.$unit.$key", locale: $locale));
+        return str_replace(':count', $value, trans("dates.diff.$unit.$key", locale: LocaleResolver::resolveTranslationLocale($locale)));
     }
 
     private static function wrapRelativeTime(string $time, bool $isFuture, string $locale): string
     {
         $wrapperKey = $isFuture ? 'future' : 'past';
 
-        return str_replace(':time', $time, trans("dates.diff.$wrapperKey", locale: $locale));
+        return str_replace(':time', $time, trans("dates.diff.$wrapperKey", locale: LocaleResolver::resolveTranslationLocale($locale)));
     }
 }

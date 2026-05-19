@@ -8,6 +8,7 @@ class LocaleResolver
      * Internal locale cache resolved.
      */
     protected static ?string $resolvedLocale = null;
+    protected static ?string $resolvedSourceLocale = null;
     protected static string $defaultLocaleKey = 'app.locale';
 
     /**
@@ -24,18 +25,39 @@ class LocaleResolver
             return self::normalize($locale);
         }
 
-        // 2. If already resolved it before, return it from the cache.
-        if (self::$resolvedLocale !== null) {
+        $appLocale = app()->getLocale() ?: config(self::$defaultLocaleKey, env('APP_LOCALE', 'en_US'));
+
+        // 2. If already resolved it before for the same app locale, return it from the cache.
+        if (self::$resolvedLocale !== null && self::$resolvedSourceLocale === $appLocale) {
             return self::$resolvedLocale;
         }
 
-        // 3. Resolve from the app
-        $appLocale = config(self::$defaultLocaleKey, env('APP_LOCALE', 'en_US'));
-
-        // 4. Normalizes and saves to cache.
+        // 3. Normalizes and saves to cache.
+        self::$resolvedSourceLocale = $appLocale;
         self::$resolvedLocale = self::normalize($appLocale);
 
         return self::$resolvedLocale;
+    }
+
+    public static function resolveTranslationLocale(?string $locale = null): string
+    {
+        $normalizedLocale = self::resolveLocale($locale);
+        $hyphenLocale = str_replace('_', '-', $normalizedLocale);
+        $languageLocale = explode('_', $normalizedLocale, 2)[0];
+
+        foreach ([$normalizedLocale, $hyphenLocale, $languageLocale] as $candidate) {
+            if (is_dir(lang_path($candidate))) {
+                return $candidate;
+            }
+        }
+
+        return $normalizedLocale;
+    }
+
+    public static function flushResolvedLocale(): void
+    {
+        self::$resolvedLocale = null;
+        self::$resolvedSourceLocale = null;
     }
 
     /**

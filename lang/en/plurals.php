@@ -5,28 +5,28 @@
 | Plurals
 |--------------------------------------------------------------------------
 |
-| Este arquivo define regras de pluralização específicas para o idioma
-| atual da aplicação. Ele é utilizado exclusivamente pela função
-| TextHelper::plural().
+| This file defines language-specific pluralization rules for the current
+| application locale. It is used exclusively by TextHelper::plural().
 |
-| Você pode adicionar quantas palavras quiser, seguindo o padrão:
+| You may add as many words as needed, following this pattern:
 |
-|   'produtos' => '{1} produto|[2,*] produtos',
+|   'products' => '{1} product|[2,*] products',
 |
-| Regras:
-| - {1}  → forma usada quando a contagem for exatamente 1
-| - [0]  → forma usada quando a contagem for 0 (opcional)
-| - [2,*] → forma usada quando a contagem for 2 ou mais
+| Rules:
+| - {1}   -> form used when the count is exactly 1
+| - {0}   -> form used when the count is 0 (optional)
+| - [2,*] -> form used when the count is 2 or greater
 |
-| Exemplos:
+| Examples:
 |
-|   'comentarios' => '{0} nenhum comentário|{1} comentário|[2,*] comentários',
-|   'pessoa'      => '{1} pessoa|[2,*] pessoas',
+|   'comments' => '{0} no comments|{1} comment|[2,*] comments',
+|   'person'   => '{1} person|[2,*] people',
 |
-| O arquivo começa vazio para que você adicione apenas o que precisar.
+| This file starts with only the entries needed by the application.
 |
 */
 
 return [
-    // 'produtos' => '{1} produto|[2,*] produtos',
+    'comments' => '{0} No Comments|{1} comment|[2,*] comments',
+    'visits' => '{0} views|{1} view|[2,*] views',
 ];

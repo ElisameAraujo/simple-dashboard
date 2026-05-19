@@ -10,9 +10,13 @@ class HelperServiceProvider extends ServiceProvider
     {
         $helpers = config('helpers.global', []);
 
-        foreach ($helpers as $helper) {
+        foreach ($helpers as $alias => $helper) {
             if (class_exists($helper)) {
-                class_alias($helper, class_basename($helper));
+                $alias = is_string($alias) ? $alias : class_basename($helper);
+
+                if (!class_exists($alias, false)) {
+                    class_alias($helper, $alias);
+                }
             }
         }
     }

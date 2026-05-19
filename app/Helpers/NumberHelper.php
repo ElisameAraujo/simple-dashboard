@@ -189,7 +189,7 @@ class NumberHelper
     {
         $locale = self::resolveLocale($locale);
 
-        if (str_starts_with($locale, 'PT')) {
+        if (str_starts_with($locale, 'pt')) {
             return $number . self::$localeOrdinalSuffixMap['pt_BR'];
         }
 

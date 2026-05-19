@@ -275,13 +275,14 @@ class TextHelper
 
         // Resolve locale using the same logic as NumberHelper.
         $locale = self::resolveLocale($locale);
+        $translationLocale = LocaleResolver::resolveTranslationLocale($locale);
 
         // Path to the key in the plurals.php file.
         $key = "plurals.{$string}";
 
         // If it exists in the current language's plural file, use trans_choice.
-        if (\Illuminate\Support\Facades\Lang::has($key, $locale)) {
-            return trans_choice($key, $count, locale: $locale);
+        if (\Illuminate\Support\Facades\Lang::has($key, $translationLocale)) {
+            return trans_choice($key, $count, locale: $translationLocale);
         }
 
         // Fallback: simple Laravel pluralization (ENGLISH ONLY)

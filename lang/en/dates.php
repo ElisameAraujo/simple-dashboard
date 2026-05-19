@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'weekydays' => [
+    'weekdays' => [
         'sunday' => 'Sunday',
         'monday' => 'Monday',
         'tuesday' => 'Tuesday',
@@ -11,7 +11,7 @@ return [
         'saturday' => 'Saturday',
     ],
 
-    'weekydays_short' => [
+    'weekdays_short' => [
         'sunday' => 'sun',
         'monday' => 'mon',
         'tuesday' => 'tue',
@@ -19,6 +19,26 @@ return [
         'thursday' => 'thu',
         'friday' => 'fri',
         'saturday' => 'sat',
+    ],
+
+    'weekdays_short_capitalized' => [
+        'Sun',
+        'Mon',
+        'Tue',
+        'Wed',
+        'Thu',
+        'Fri',
+        'Sat',
+    ],
+
+    'weekdays_extended' => [
+        'sunday' => 'sunday',
+        'monday' => 'monday',
+        'tuesday' => 'tuesday',
+        'wednesday' => 'wednesday',
+        'thursday' => 'thursday',
+        'friday' => 'friday',
+        'saturday' => 'saturday',
     ],
 
     'months' => [
@@ -36,7 +56,7 @@ return [
         'december' => 'December',
     ],
 
-    'short_months' => [
+    'months_short' => [
         'january_short' => 'Jan',
         'february_short' => 'Feb',
         'march_short' => 'Mar',
@@ -51,9 +71,33 @@ return [
         'december_short' => 'Dec',
     ],
 
+    'months_simple' => [
+        'jan.',
+        'feb.',
+        'mar.',
+        'apr.',
+        'may.',
+        'jun.',
+        'jul.',
+        'aug.',
+        'sep.',
+        'oct.',
+        'nov.',
+        'dec.',
+    ],
+
     'diff' => [
-        'before' => ':time ago',
-        'after' => 'In :time',
+        'past' => ':time ago',
+        'future' => 'In :time',
+
+        'year' => ['one' => '1 year', 'many' => ':count years'],
+        'month' => ['one' => '1 month', 'many' => ':count months'],
+        'week' => ['one' => '1 week', 'many' => ':count weeks'],
+        'day' => ['one' => '1 day', 'many' => ':count days'],
+        'hour' => ['one' => '1 hour', 'many' => ':count hours'],
+        'minute' => ['one' => '1 minute', 'many' => ':count minutes'],
+        'second' => ['one' => '1 second', 'many' => ':count seconds'],
+        'now' => 'just now',
     ],
 
     'formats' => [
@@ -65,5 +109,11 @@ return [
         'full_weekday' => 'l, F j, Y',
         'short_date' => 'm/d',
         'short_time' => 'H:i',
+        'date_excel' => 'm/d/Y H:i',
+    ],
+
+    'email' => [
+        'format' => ':weekday, :month :day, :time',
+        'wrapper' => '(:relative)',
     ],
 ];

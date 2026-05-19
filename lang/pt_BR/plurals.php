@@ -28,5 +28,6 @@
 */
 
 return [
-    // 'produtos' => '{1} produto|[2,*] produtos',
+    'comments' => '{0} Nenhum Comentário|{1} comentário|[2,*] comentários',
+    'visits' => '{0} visitas|{1} visita|[2,*] visitas',
 ];
