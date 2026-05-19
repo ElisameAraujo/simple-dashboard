@@ -31,15 +31,15 @@ class DiskHelper
     /**
      * `updateFile`:
      * This function allow to update an existing file by saving a new one and deleting the old one.
-     * @param mixed $file File that will be saved
+     * @param mixed $newFile File that will be saved
      * @param string $oldFile Path to the old file that will be removed
      * @param string $disk Disk where the file will be saved
      * @param array|string|null $subfolders Subfolders where the file can be located (optional)
      * @return string
      */
-    public static function updateFile($file, string $oldFile, ?string $disk = 'public', array|string|null $subfolders = null): string
+    public static function updateFile($newFile, string $oldFile, ?string $disk = 'public', array|string|null $subfolders = null): string
     {
-        $newPath = self::saveFile($file, $disk, $subfolders);
+        $newPath = self::saveFile($newFile, $disk, $subfolders);
 
         if ($oldFile && Storage::disk($disk)->exists($oldFile)) {
             Storage::disk($disk)->delete($oldFile);
