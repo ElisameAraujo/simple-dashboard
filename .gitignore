@@ -22,7 +22,5 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-/arquivos
-/.git-base
-/.git-main
+/modules
 sync.ffs_db
