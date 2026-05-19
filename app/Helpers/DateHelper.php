@@ -120,10 +120,19 @@ class DateHelper
     {
         $locale = LocaleResolver::resolveLocale($locale);
 
-        return self::applyLocale(CarbonImmutable::parse($date), $locale)
-            ->diffForHumans(self::applyLocale(now(), $locale));
-    }
+        $target = CarbonImmutable::parse($date);
+        $now = CarbonImmutable::now();
 
+        if ($target->equalTo($now)) {
+            return trans('dates.diff.now', locale: $locale);
+        }
+
+        $isFuture = $target->greaterThan($now);
+
+        $unit = self::diffUnit($target, $now);
+
+        return self::relativeDiff($unit, $isFuture, $locale);
+    }
     /**
      * `dateWithHoursAndSeconds`:
      * Returns the date with time with seconds
@@ -135,6 +144,21 @@ class DateHelper
     {
         $locale = LocaleResolver::resolveLocale($locale);
         $format = trans("dates.formats.date_time_short_seconds", locale: $locale);
+
+        return self::applyLocale(Carbon::parse($date), $locale)->format($format);
+    }
+
+    /**
+     * `dateExcel`:
+     * Returns the date in Excel locale format
+     * @param string $date Date string to format
+     * @param string|null $locale Locale to use for formatting
+     * @return string Formatted date in Excel locale format
+     */
+    public static function dateExcel(string $date, ?string $locale = null): string
+    {
+        $locale = LocaleResolver::resolveLocale($locale);
+        $format = trans("dates.formats.date_excel", locale: $locale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
     }
@@ -211,5 +235,77 @@ class DateHelper
         $format = trans("dates.formats.short_time", locale: $locale);
 
         return self::applyLocale(Carbon::parse($date), $locale)->format($format);
+    }
+
+    /**
+     * `emailDate`:
+     * Returns a date formatted for email display, including the relative time.
+     * @param string $date Date string to format
+     * @return string Formatted email date with relative time
+     */
+
+    public static function emailDate(string $date, ?string $locale = null): string
+    {
+        $locale = LocaleResolver::resolveLocale($locale);
+        $date = Carbon::parse($date);
+
+        $formattedDate = self::formatEmailDate($date, $locale);
+        $relative = self::diffDatesHuman($date->toDateTimeString(), $locale);
+
+        return $formattedDate . ' ' . trans('dates.email.wrapper', ['relative' => $relative,], locale: $locale);
+    }
+
+    /** === Private Functions === **/
+    private static function formatEmailDate(Carbon $date, string $locale): string
+    {
+        $weekdays = trans('dates.weekdays_short_capitalized', locale: $locale);
+        $months   = trans('dates.months_simple', locale: $locale);
+
+        return trans('dates.email.format', [
+            'weekday' => $weekdays[$date->dayOfWeek],
+            'day'     => $date->day,
+            'month'   => $months[$date->month - 1],
+            'time'    => $date->format('H:i'),
+        ], locale: $locale);
+    }
+
+    private static function diffUnit(CarbonImmutable $target, CarbonImmutable $now): array
+    {
+        $diff = $target->diff($now);
+
+        return [
+            'year'   => $diff->y,
+            'month'  => $diff->m,
+            'day'    => $diff->d,
+            'hour'   => $diff->h,
+            'minute' => $diff->i,
+            'second' => $diff->s,
+        ];
+    }
+
+    private static function relativeDiff(array $units, bool $isFuture, string $locale): string
+    {
+        foreach ($units as $unit => $value) {
+            if ($value > 0) {
+                $time = self::formatTimeUnit($unit, $value, $locale);
+                return self::wrapRelativeTime($time, $isFuture, $locale);
+            }
+        }
+
+        return trans('dates.diff.now', locale: $locale);
+    }
+
+    private static function formatTimeUnit(string $unit, int $value, string $locale): string
+    {
+        $key = $value === 1 ? 'one' : 'many';
+
+        return str_replace(':count', $value, trans("dates.diff.$unit.$key", locale: $locale));
+    }
+
+    private static function wrapRelativeTime(string $time, bool $isFuture, string $locale): string
+    {
+        $wrapperKey = $isFuture ? 'future' : 'past';
+
+        return str_replace(':time', $time, trans("dates.diff.$wrapperKey", locale: $locale));
     }
 }
