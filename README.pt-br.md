@@ -1,12 +1,12 @@
 <p align="center" style="display: flex; justify-content:center; gap: 10px; width: 100%">
-<img alt="Static Badge" src="https://img.shields.io/badge/Laravel%2012-version?style=plastic&logo=laravel&logoColor=white&labelColor=%23FF2D20&color=black">
+<img alt="Static Badge" src="https://img.shields.io/badge/Laravel%2013-version?style=plastic&logo=laravel&logoColor=white&labelColor=%23FF2D20&color=black">
 <img alt="Static Badge" src="https://img.shields.io/badge/DaisyUI%205-version?style=plastic&logo=daisyui&logoColor=white&labelColor=%231AD1A5&color=black">
-<img alt="Static Badge" src="https://img.shields.io/badge/Livewire%203-version?style=plastic&logo=livewire&logoColor=white&labelColor=%234E56A6&color=black">
+<img alt="Static Badge" src="https://img.shields.io/badge/Livewire%204-version?style=plastic&logo=livewire&logoColor=white&labelColor=%234E56A6&color=black">
 <img alt="Static Badge" src="https://img.shields.io/badge/FontAwesome%207-version?style=plastic&logo=fontawesome&logoColor=white&labelColor=%23538DD7&color=black">
 </p>
 
 <div style="display: flex; justify-content:center; gap: .4em; width: 100%">
-<a href="https://github.com/ElisameAraujo/simple-dashboard-base">
+<a href="https://github.com/ElisameAraujo/simple-dashboard">
 Readme (English)
 </a>
 |
@@ -19,9 +19,9 @@ Readme (Português do Brasil)
 
 Um painel administrativo simples, moderno e funcional, construído com:
 
--   **Laravel 12+**
--   **Livewire 3+**
--   **TailwindCSS 4+**
+-   **Laravel 13+**
+-   **Livewire 4+**
+-   **Tailwind CSS 4+**
 -   **DaisyUI 5+**
 -   **FontAwesome 7+**
 
@@ -53,7 +53,7 @@ composer run dev
 # 📦 Requisitos
 
 -   **PHP 8.3+**
--   **Laravel 12+**
+-   **Laravel 13+**
 -   **Node 20+**
 -   **Composer 2+**
 
@@ -70,9 +70,13 @@ composer run dev
 │   │   │   └── LocaleResolver.php
 │   │   ├── DateHelper.php
 │   │   ├── DiskHelper.php
+|   |   ├── HTMLHelper.php
 │   │   ├── MediaHelper.php
 │   │   ├── NotificationHelper.php
 │   │   ├── NumberHelper.php
+│   │   ├── PaginationHelper.php
+│   │   ├── RouteHelper.php
+│   │   ├── RuleHelper.php
 │   │   ├── TextHelper.php
 │   │   └── UserHelper.php
 │   ├── ...
@@ -88,17 +92,25 @@ composer run dev
 │   ├── en-US/
 │   │   ├── DateHelper.md
 │   │   ├── DiskHelper.md
+│   │   ├── HTMLHelper.md
 │   │   ├── MediaHelper.md
 │   │   ├── NotificationHelper.md
 │   │   ├── NumberHelper.md
+│   │   ├── PaginationHelper.md
+│   │   ├── RouteHelper.md
+│   │   ├── RuleHelper.md
 │   │   ├── TextHelper.md
 │   │   └── UserHelper.md
 │   └── pt-BR/
 │       ├── DateHelper.md
 │       ├── DiskHelper.md
+│       ├── HTMLHelper.md
 │       ├── MediaHelper.md
 │       ├── NotificationHelper.md
 │       ├── NumberHelper.md
+│       ├── PaginationHelper.md
+│       ├── RouteHelper.md
+│       ├── RuleHelper.md
 │       ├── TextHelper.md
 │       └── UserHelper.md
 ├── lang/
@@ -179,10 +191,13 @@ Os helpers disponíveis atualmente são:
 | ---------------------- | -------------------------------------------- |
 | **DateHelper**         | Manipulação e formatação de datas            |
 | **DiskHelper**         | Gerenciamento de discos e caminhos           |
+| **HTMLHelper**         | Criação de HTML para factories               |
 | **MediaHelper**        | Exibição e manipulação de mídias             |
 | **NotificationHelper** | Gerenciamento de notificações do Laravel     |
 | **NumberHelper**       | Formatação numérica multilíngue              |
+| **PaginationHelper**   | Criação de paginação com múltiplas partes    |
 | **RoutesHelper**       | Importa as rotas da aplicação de forma fácil |
+| **RuleHelper**         | Extração de valores de regras ou classes DTO |
 | **TextHelper**         | Limpeza, normalização e pluralização         |
 | **UserHelper**         | Acesso rápido a dados do usuário             |
 
@@ -226,7 +241,6 @@ Se você quiser substituir ou editar o tema atual, basta editar o arquivo `theme
 -   **[Spatie Media Library](https://github.com/spatie/laravel-medialibrary)** — gerenciamento de mídias que estão ligadas as Models do Eloquent
 -   **[Spatie Laravel Permission](https://github.com/spatie/laravel-permission)** — Gerenciamento de cargos e permissões
 -   **[Log Viewer](https://log-viewer.opcodes.io/)** — Permite ler os seus logs do Laravel de maneira mais clara e organizada
--   **[Laravisit](https://github.com/coderflexx/laravisit)** — Permite rastrear as visitas das suas models, ideal para blogs e projetos que precisem captar visitas
 
 ---
 
