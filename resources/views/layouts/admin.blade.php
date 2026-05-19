@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Administração | @yield('titulo')</title>
 
+    @include('components.global.theme-loader')
     @vite(['resources/css/admin/admin.css', 'resources/js/admin/admin.js'])
 </head>
 
