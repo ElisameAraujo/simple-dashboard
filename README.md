@@ -131,7 +131,6 @@ composer run dev
 │   │   │       ├── dark.css
 │   │   │       ├── header.css
 │   │   │       ├── profile-options.css
-│   │   │       ├── search-modal.css
 │   │   │       └── sidebar.css
 │   │   ├── global/
 │   │   │   ├── theme.css
@@ -143,9 +142,9 @@ composer run dev
 │   │   ├── admin/
 │   │   │   ├── admin.js
 │   │   │   ├── mobile-menu.js
-│   │   │   ├── search-modal.js
 │   │   │   └── submenu.js
 │   │   └── web/
+│   │       └── web.js
 │   └── views/
 │       ├── admin/
 │       │   ├── dashboard/
@@ -158,7 +157,6 @@ composer run dev
 │       │   └── admin/
 │       │       ├── header.blade.php
 │       │       ├── menu-structrure.blade.php
-│       │       ├── search-modal.blade.php
 │       │       ├── side-menu.blade-mobile.php
 │       │       └── side-menu.blade.php
 │       ├── layouts/

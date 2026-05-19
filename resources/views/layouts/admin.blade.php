@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
@@ -9,11 +9,11 @@
 
     @include('components.global.theme-loader')
     @vite(['resources/css/admin/admin.css', 'resources/js/admin/admin.js'])
+    @livewireStyles
 </head>
 
 <body>
     <div class="app">
-        @include('components.admin.search-modal')
         @include('components.admin.side-menu')
         @include('components.admin.side-menu-mobile')
         <main>
@@ -23,6 +23,9 @@
             </div>
         </main>
     </div>
+    @livewire('livewire-ui-spotlight')
+
+    @livewireScripts
 </body>
 
 </html>

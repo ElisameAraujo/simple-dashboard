@@ -17,14 +17,6 @@ import "@fortawesome/fontawesome-free/js/all.js";
 import "@fortawesome/fontawesome-free/css/all.css";
 
 /**
- * Search Modal
- */
-
-import './search-modal'
-
-
-
-/**
  * Theme Change
  */
 themeChange()

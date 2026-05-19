@@ -34,13 +34,13 @@
     </ul>
 </div>
 
-<div class="search-box" onclick="spotlight.showModal()">
+<button type="button" class="search-box" onclick="window.dispatchEvent(new CustomEvent('toggle-spotlight'))">
     <span class="search-input">
         <i class="fa-solid fa-magnifying-glass"></i>
         <span>{{ __('ui.search') }}</span>
     </span>
     <kbd class="kbd kbd-sm px-2">Ctrl+K</kbd>
-</div>
+</button>
 
 <div class="actions-buttons">
     <label class="swap tooltip" data-tip="{{ __('ui.switch_theme') }}">

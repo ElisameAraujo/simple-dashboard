@@ -114,32 +114,3 @@
 [data-theme="dark"] input:focus-within {
     @apply border-secondary outline-secondary ring-secondary/50;
 }
-
-/** Search Modal **/
-[data-theme="dark"] .modal-search .modal__container .modal__input input {
-    @apply text-white;
-}
-
-[data-theme="dark"] .modal-search .modal__filters {
-    @apply text-gray-400;
-}
-
-[data-theme="dark"] .modal-search .modal__filters button.filter-button {
-    @apply bg-gray-600 text-gray-300;
-}
-
-[data-theme="dark"] .modal-search .modal__filters button.filter-button:hover {
-    @apply bg-primary text-white cursor-pointer;
-}
-
-[data-theme="dark"] .modal-result__list > .modal-result__item .result-text .result-location {
-    @apply bg-secondary/50 text-white;
-}
-
-[data-theme="dark"] .modal-result__list > .modal-result__item:hover .result-text .result-location {
-    @apply bg-white text-black;
-}
-
-[data-theme="dark"] .modal-result__list > .modal-result__item:hover {
-    @apply bg-primary/40 text-white transition-default;
-}
