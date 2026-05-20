@@ -88,7 +88,7 @@ composer run dev
 │   └── helpers.php (Helpers Registry)
 ├── ...
 ├── documentation/
-│   ├── en-US/
+│   ├── en/
 │   │   ├── DateHelper.md
 │   │   ├── DiskHelper.md
 │   │   ├── HTMLHelper.md
