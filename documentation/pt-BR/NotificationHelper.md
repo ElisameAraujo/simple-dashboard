@@ -1,135 +1,132 @@
-# 🔔 NotificationHelper
+# NotificationHelper
 
-A classe **NotificationHelper** fornece funções utilitárias para manipulação de notificações do usuário no Laravel.  
-Ela simplifica operações comuns como listar notificações não lidas, contar, marcar como lidas/não lidas, remover e consultar histórico.
+Consulta e conta notificações do usuário autenticado para dropdowns, badges e telas de leitura.
 
----
+## Quando Usar
 
-## 📂 Funções disponíveis
+- Use NotificationHelper quando uma view, componente Livewire ou controller precisa buscar notificações do usuário logado sem repetir verificações de Auth.
+- O helper é focado em leitura. Ações como marcar como lida, marcar todas como lidas ou excluir notificações devem ficar no Controller ou no componente Livewire que controla a interação.
+- latestNotifications() alimenta resumos curtos, como o dropdown do header; allUnreadNotifications() alimenta listas completas de pendências que não cabem no resumo.
+- Quando não existe usuário autenticado, os métodos de lista retornam uma Collection vazia e os métodos de contagem retornam 0.
 
-### `unreadNotificationsByType(string $type, ?string $subfolder = null, ?int $limit = 5)`
-
-Lista notificações **não lidas** de um tipo específico.
-
--   `$type`: Nome da classe de notificação.
--   `$subfolder`: Subpasta dentro de `App\Notifications`. Opcional.
--   `$limit`: Limite de registros retornados. Opcional, padrão `5`.
+## Exemplo
 
 ```php
-NotificationHelper::unreadNotificationsByType('NewMessageNotification', 'User', 10);
+$unreadCount = NotificationHelper::allUnreadNotificationsCount();
+$dropdownNotifications = NotificationHelper::latestNotifications(10);
 ```
 
----
+**Saída**
 
-### `unreadNotificationsByTypeCount(string $type, ?string $subfolder = null): int`
+```
+15 notificações não lidas e 10 itens para o dropdown.
+```
 
-Retorna o **total de notificações não lidas** de um tipo específico.
+## Métodos
+
+### `unreadNotificationsByType`
+
+Lista notificações não lidas de uma classe específica de notificação.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `type` | Nome da classe de notificação ou classe completa com namespace. |
+| `subfolder` | Subpasta opcional dentro de App\Notifications, como User. |
+| `limit` | Limite opcional de registros retornados. Quando null ou menor que 1, retorna todos os registros encontrados. |
+
+**Exemplo**
+
+```php
+NotificationHelper::unreadNotificationsByType('NewMessageNotification', 'User', 5);
+```
+
+**Saída**
+
+```
+Collection com até 5 notificações não lidas do tipo App\Notifications\User\NewMessageNotification.
+```
+
+### `unreadNotificationsByTypeCount`
+
+Conta notificações não lidas de uma classe específica de notificação.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `type` | Nome da classe de notificação ou classe completa com namespace. |
+| `subfolder` | Subpasta opcional dentro de App\Notifications, como User. |
+
+**Exemplo**
 
 ```php
 NotificationHelper::unreadNotificationsByTypeCount('NewMessageNotification', 'User');
-// 3
 ```
 
----
+**Saída**
 
-### `allUnreadNotifications(?int $limit = 10)`
+```
+3
+```
 
-Lista **todas as notificações não lidas** do usuário.
+### `allUnreadNotifications`
 
--   `$limit`: Limite de registros retornados. Opcional, padrão `10`.
+Lista todas as notificações não lidas do usuário autenticado, com limite opcional.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `limit` | Limite opcional de registros retornados. Quando null, retorna todas as notificações não lidas. |
+
+**Exemplo**
 
 ```php
-NotificationHelper::allUnreadNotifications(20);
+NotificationHelper::allUnreadNotifications();
 ```
 
----
+**Saída**
 
-### `allUnreadNotificationsCount(): int`
+```
+Collection com todas as notificações não lidas.
+```
 
-Retorna o **total geral de notificações não lidas** do usuário.
+### `allUnreadNotificationsCount`
+
+Conta todas as notificações não lidas do usuário autenticado.
+
+**Exemplo**
 
 ```php
 NotificationHelper::allUnreadNotificationsCount();
-// 12
 ```
 
----
+**Saída**
 
-### `markAllAsRead(): void`
+```
+15
+```
 
-Marca **todas as notificações não lidas** como lidas.
+### `latestNotifications`
+
+Lista as notificações mais recentes do usuário autenticado, lidas ou não lidas, para resumos como dropdowns.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `limit` | Quantidade máxima de notificações retornadas. Quando null ou menor que 1, retorna todas. |
+
+**Exemplo**
 
 ```php
-NotificationHelper::markAllAsRead();
+NotificationHelper::latestNotifications(10);
 ```
 
----
+**Saída**
 
-### `markAllAsReadByType(string $type, ?string $subfolder = null): void`
-
-Marca **todas as notificações não lidas de um tipo específico** como lidas.
-
-```php
-NotificationHelper::markAllAsReadByType('NewMessageNotification', 'User');
 ```
-
----
-
-### `latestNotifications(?int $limit = 10)`
-
-Lista as **últimas notificações** (lidas ou não).
-
--   `$limit`: Limite de registros retornados. Opcional, padrão `10`.
-
-```php
-NotificationHelper::latestNotifications(15);
+Collection com as 10 notificações mais recentes.
 ```
-
----
-
-### `markAsRead(string $notificationId): bool`
-
-Marca uma **notificação específica** como lida.
-
--   `$notificationId`: ID da notificação.
-
-```php
-NotificationHelper::markAsRead('12345-uuid');
-// true
-```
-
----
-
-### `markAsUnread(string $notificationId): bool`
-
-Marca uma **notificação específica** como não lida.
-
--   `$notificationId`: ID da notificação.
-
-```php
-NotificationHelper::markAsUnread('12345-uuid');
-// true
-```
-
----
-
-### `deleteNotification(string $notificationId): bool`
-
-Remove uma **notificação específica**.
-
--   `$notificationId`: ID da notificação.
-
-```php
-NotificationHelper::deleteNotification('12345-uuid');
-// true
-```
-
----
-
-## ✅ Observações importantes
-
--   Todas as funções verificam se o usuário está autenticado (`Auth::check()`).
--   Se o usuário não estiver autenticado, funções que retornam listas devolvem uma `Collection` vazia e funções que retornam contadores devolvem `0`.
--   IDs de notificações são geralmente UUIDs gerados pelo Laravel.
--   Métodos de marcação (`markAsRead`, `markAsUnread`, `markAllAsRead`, `markAllAsReadByType`) atualizam o campo `read_at`.
--   `deleteNotification` remove permanentemente a notificação do banco.

@@ -1,106 +1,140 @@
-# 🎞️ MediaHelper
+# MediaHelper
 
-The **MediaHelper** class provides utility functions for manipulating and displaying media files (images, videos, PDFs, etc.) stored on disks configured in Laravel (`config/filesystems.php`).  
-It simplifies common operations such as checking file existence, generating public URLs, obtaining internal paths, downloading files, and identifying MIME types.
+Displays, validates, and returns URLs or responses for media stored on Laravel disks.
 
----
+## When To Use
 
-## 📂 Available Functions
+- Use MediaHelper when a view or service receives only the path stored in the database and needs to turn it into a public URL, placeholder, download, or MIME type detail.
+- The disk parameter points to a disk configured in config/filesystems.php and, in the common dashboard base usage, also represents the public folder used in the final URL.
+- The path parameter must be relative to the disk. For example, if the file is stored on the products disk as demo.jpg, showMedia('demo.jpg', 'products') returns /storage/products/demo.jpg.
 
-### `mediaExists(?string $disk = 'public', ?string $path = null): bool`
-
-Checks if a media file exists on a disk.
-
--   `$disk`: Disk configured in `filesystems.php`. Optional, default `public`.
--   `$path`: Relative path of the media within the disk.
-
-Returns `true` if the file exists, `false` otherwise.
+## Example
 
 ```php
-MediaHelper::mediaExists('my-disk', 'uploads/avatar.jpg');
-// true or false
+<img src="{{ MediaHelper::showMedia($product->product_image, 'products', 'img/placeholders/product-image-not-found.jpg') }}">
 ```
 
----
+**Output**
 
-### `showMedia(string $path, ?string $disk = 'public', ?string $placeholder = null): ?string`
-
-Returns the **public URL** of the media or a _placeholder_ if the file doesn't exist.
-
--   `$path`: Relative path of the media within the disk.
--   `$disk`: Disk configured in `filesystems.php`. Optional, default `public`.
--   `$placeholder`: Path to fallback image/file in `public/`. Optional.
-
-```blade
-<img src="{{ MediaHelper::showMedia('uploads/avatar.jpg') }}" />
-
-<img src="{{ MediaHelper::showMedia('uploads/avatar.jpg', 'my-disk', 'images/default-avatar.png') }}" />
+```
+<img src="/storage/products/demo.jpg">
 ```
 
----
+## Methods
 
-### `mediaFullPath(string $path, ?string $disk = 'public'): ?string`
+### `mediaExists`
 
-Returns the complete path relative to the project, **without the APP_URL**.
+Checks if a media file exists on the given disk.
 
--   `$path`: Relative path of the media.
--   `$disk`: Disk configured in `filesystems.php`. Optional, default `public`.
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `disk` | Disk configured in config/filesystems.php. When null, public is used. |
+| `path` | Relative media path inside the disk. Empty values return false. |
+
+**Example**
 
 ```php
-MediaHelper::mediaFullPath('uploads/file.pdf', 'my-disk');
-// "/storage/my-disk/uploads/file.pdf"
+MediaHelper::mediaExists('products', 'demo.jpg');
 ```
 
----
+**Output**
 
-### `downloadMedia(string $path, ?string $customName = null, ?string $disk = 'public')`
+```
+true
+```
 
-Returns a **download response** for the media.
+### `showMedia`
 
--   `$path`: Relative path of the media.
--   `$customName`: Custom name for the downloaded file. Optional.
--   `$disk`: Disk configured in `filesystems.php`. Optional, default `public`.
+Returns the public URL of an existing media file, or a placeholder URL when the file does not exist.
 
-If `$customName` is not provided, it automatically uses the file's **basename**.
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `path` | Relative media path inside the disk. |
+| `disk` | Disk configured in config/filesystems.php. When null, public is used. |
+| `placeholder` | Fallback path inside public, used when the media file does not exist. |
+
+**Example**
 
 ```php
-// download with the file's actual name
-return MediaHelper::downloadMedia('reports/relatorio-final.pdf');
-
-// download with a custom name
-return MediaHelper::downloadMedia('reports/relatorio-final.pdf', 'Report.pdf');
-
-// download from another disk
-return MediaHelper::downloadMedia('reports/relatorio-final.pdf', null, 'my-disk');
+MediaHelper::showMedia('demo.jpg', 'products', 'img/placeholders/product-image-not-found.jpg');
 ```
 
----
+**Output**
 
-### `mediaMimeType(string $path, ?string $disk = 'public'): string`
+```
+/storage/products/demo.jpg
+```
 
-Returns the **MIME type** of the media (e.g., `image/jpeg`, `video/mp4`).  
-If the file doesn't exist or the MIME type cannot be identified, returns `"mimetype unknown"`.
+### `mediaFullPath`
 
--   `$path`: Relative path of the media.
--   `$disk`: Disk configured in `filesystems.php`. Optional, default `public`.
+Returns the public media path without the configured APP_URL.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `path` | Relative media path inside the disk. |
+| `disk` | Disk configured in config/filesystems.php. When null, public is used. |
+
+**Example**
 
 ```php
-MediaHelper::mediaMimeType('uploads/avatar.jpg');
-// "image/jpeg"
-
-MediaHelper::mediaMimeType('videos/demo.mp4', 'my-disk');
-// "video/mp4"
-
-MediaHelper::mediaMimeType('nonexistent-file.txt', 'my-disk');
-// "mimetype unknown"
+MediaHelper::mediaFullPath('manual.pdf', 'downloads');
 ```
 
----
+**Output**
 
-## ✅ Important Notes
+```
+/storage/downloads/manual.pdf
+```
 
--   The `$disk` parameter always refers to the disk configured in `config/filesystems.php`.
--   The `$path` parameter must be the relative path within the disk (e.g., `uploads/file.jpg`).
--   The `$placeholder` parameter is optional and only used in `showMedia`.
--   `downloadMedia` aborts with `404` if the file doesn't exist.
--   `mediaMimeType` never returns `null`, always returns a valid string.
+### `downloadMedia`
+
+Returns a download response for an existing file.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `path` | Relative media path inside the disk. |
+| `customName` | Custom name for the downloaded file. When null, the original file name is used. |
+| `disk` | Disk configured in config/filesystems.php. When null, public is used. |
+
+**Example**
+
+```php
+return MediaHelper::downloadMedia('reports/final-report.pdf', 'Report.pdf', 'public');
+```
+
+**Output**
+
+```
+BinaryFileResponse
+```
+
+### `mediaMimeType`
+
+Returns the MIME type of an existing media file, or a translated message when the file does not exist or cannot be identified.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `path` | Relative media path inside the disk. |
+| `disk` | Disk configured in config/filesystems.php. When null, public is used. |
+
+**Example**
+
+```php
+MediaHelper::mediaMimeType('avatars/user.jpg', 'public');
+```
+
+**Output**
+
+```
+image/jpeg
+```

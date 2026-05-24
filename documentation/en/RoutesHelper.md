@@ -1,193 +1,89 @@
-# 🚦 RouteHelper
+# RouteHelper
 
-The **RouteHelper** is a utility class that facilitates the organization and importing of route files in Laravel.  
-It offers two main ways to load routes:
+Imports route files organized in folders within routes/ and lists the application's registered routes.
 
--   **importRouteFile** → Imports a specific file
--   **importRoutesFromFolder** → Imports all files from a folder (with optional subfolders and exclusions)
+## When To Use
 
-Additionally, it includes a method to list all routes registered in the application.
+- Use RouteHelper to keep routes/web.php compact when a project separates routes by areas such as demo, admin, auth, or web.
+- importRoutesFromFolder() is the main flow. It loads the direct .php files inside the final folder provided.
+- Folder imports are not recursive. To load routes/web/home/sections/*.php, pass web as rootFolder and ['home', 'sections'] as subfolders.
+- Filenames are protected against invalid extensions and paths are validated to stay inside routes/.
 
----
-
-# 📌 General Structure
-
-The helper always works within the folder:
-
-```
-routes/
-```
-
-And allows you to navigate through subfolders in a simple and predictable way.
-
----
-
-# 📂 Available Functions
-
----
-
-### `importRouteFile(string $filename, string|array|null $folders = null)`
-
-Imports **a single route file**, located in `routes/` or in subfolders.
-
-#### **Example 1 — file at the root**
+## Example
 
 ```php
-RouteHelper::importRouteFile('admin');
+RouteHelper::importRoutesFromFolder('demo', 'helpers');
 ```
 
-Loads:
+**Output**
 
 ```
-routes/admin.php
+Direct .php files from routes/demo/helpers loaded.
 ```
 
----
+## Methods
 
-#### **Example 2 — file in a subfolder**
+### `importRouteFile`
+
+Imports a single route file within routes/ or one of its subfolders.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `filename` | Route filename. Prefer passing it without .php; a single .php extension is also accepted. |
+| `folders` | Folder or list of folders inside routes/ where the file is located. |
+
+**Example**
 
 ```php
-RouteHelper::importRouteFile('users', 'admin');
+RouteHelper::importRouteFile('helper-routes', ['demo', 'helpers']);
 ```
 
-Loads:
+**Output**
 
 ```
-routes/admin/users.php
+routes/demo/helpers/helper-routes.php loaded.
 ```
 
----
+### `importRoutesFromFolder`
 
-#### **Example 3 — file in multiple subfolder levels**
+Imports all direct .php files inside a route folder, with support for subfolders and exclusions.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `rootFolder` | Root folder inside routes/. |
+| `subfolders` | Subfolder or list of subfolders inside the root folder. |
+| `except` | Filename or list of files that should be skipped while loading. |
+
+**Example**
 
 ```php
-RouteHelper::importRouteFile('orders', ['ecommerce', 'v2']);
+RouteHelper::importRoutesFromFolder('demo', ['helpers'], 'legacy-routes');
 ```
 
-Loads:
+**Output**
 
 ```
-routes/ecommerce/v2/orders.php
+Direct .php files from routes/demo/helpers loaded, except legacy-routes.php.
 ```
 
----
+### `listAllRoutes`
 
-### `importRoutesFromFolder(string $rootFolder, string|array|null $subfolders = null, string|array|null $except = null)`
+Returns a simple inventory of the registered routes, including URI, name, HTTP method, and action.
 
-Imports **all `.php` files** within a specific folder, with support for:
-
--   optional subfolders
--   exclusion of specific files
-
-This function is ideal when you organize your routes by modules or sections.
-
-#### Structure
-
--   `$rootFolder`: Root folder within `routes/`
--   `$subfolders` _(optional)_: Receives a string or an array of subfolders where the route file is located. If ignored, it will import route files only from the root of the folder inside `routes/`. If a value is passed, it will only look for files inside the subfolder.
--   `$except` _(optional)_: Also optional. Here you can define which files you want to ignore within the root folder. If no value is passed, it will import all files.
-
----
-
-### 🧪 Usage Examples
-
-#### ✔ Import all files from the root folder
+**Example**
 
 ```php
-RouteHelper::importRoutesFromFolder('admin');
+RouteHelper::listAllRoutes();
 ```
 
-Loads:
+**Output**
 
 ```
-routes/admin/*.php
-```
-
----
-
-#### ✔ Import files from a subfolder
-
-```php
-RouteHelper::importRoutesFromFolder('admin', 'v2');
-```
-
-Loads:
-
-```
-routes/admin/v2/*.php
-```
-
----
-
-#### ✔ Import files from multiple subfolders (hierarchy)
-
-```php
-RouteHelper::importRoutesFromFolder('admin', ['ecommerce', 'v2']);
-```
-
-Loads:
-
-```
-routes/admin/ecommerce/v2/*.php
-```
-
----
-
-#### ✔ Import everything, except some files
-
-```php
-RouteHelper::importRoutesFromFolder('admin', null, ['auth', 'debug']);
-```
-
-Ignores:
-
-```
-routes/admin/auth.php
-routes/admin/debug.php
-```
-
----
-
-#### ✔ Import from subfolders and ignore specific files
-
-```php
-RouteHelper::importRoutesFromFolder('admin', ['ecommerce', 'v2'], 'experimental');
-```
-
-Ignores:
-
-```
-routes/admin/ecommerce/v2/experimental.php
-```
-
----
-
-### `listAllRoutes()`
-
-Returns a list of all routes registered in the application.
-
-### Example:
-
-```php
-$routes = RouteHelper::listAllRoutes();
-```
-
-Return:
-
-```php
 [
-    [
-        'uri' => 'admin/users',
-        'name' => 'admin.users.index',
-        'method' => 'GET|HEAD',
-        'action' => 'App\Http\Controllers\Admin\UserController@index',
-    ],
-    ...
+    ['uri' => 'helpers', 'name' => 'helpers.index', 'method' => 'GET|HEAD', 'action' => 'App\Http\Controllers\Admin\HelpersController@index'],
 ]
 ```
-
-Useful for:
-
--   debugging
--   documentation generation
--   route inspection in development environment

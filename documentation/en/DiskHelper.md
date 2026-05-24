@@ -1,121 +1,144 @@
-# 🖴 DiskHelper
+# DiskHelper
 
-## Overview
+Saves, replaces, removes, and inspects files on configured Laravel disks.
 
-The **DiskHelper** class provides utility functions to manipulate files on disks configured in Laravel (`config/filesystems.php`).  
-It simplifies common operations such as saving, updating, removing, getting size, downloading, and generating public URLs for files.
+## When To Use
 
----
+- Use DiskHelper to centralize file operations when a feature receives uploads and only needs to persist the relative path in the database.
+- The disk parameter always points to a disk configured in config/filesystems.php; subfolders organize folders inside that disk.
+- Subfolders may be a simple string or an array of strings, allowing paths such as feminine or feminine/march.
 
-## 📂 Available Functions
-
-### `saveFile($file, ?string $disk = 'public', array|string|null $subfolders = null): string`
-
-Saves a file within the Laravel disk structure.
-
--   `$file`: File to be saved (instance of `UploadedFile`).
--   `$disk`: Disk where the file will be saved. Optional, default `public`.
--   `$subfolders`: Subfolder or array of subfolders within the disk. Optional.
-
-The filename is generated automatically with a unique identifier.  
-Returns the **relative path** of the file within the disk.
+## Example
 
 ```php
-DiskHelper::saveFile($file, 'my-disk');
-// "my-disk/my-saved-file-20251218170832.jpg"
-
-DiskHelper::saveFile($file, 'my-disk', 'uploads');
-// "my-disk/uploads/my-saved-file-20251218170832.jpg"
-
-DiskHelper::saveFile($file, 'my-disk', ['uploads','reports','2015','dec','21']);
-// "my-disk/uploads/reports/2015/dec/21/my-saved-file-20251218170832.jpg"
+$path = DiskHelper::saveFile($image, 'products', ['feminine', 'march']);
 ```
 
----
+**Output**
 
-### `updateFile($file, string $oldFile, ?string $disk = 'public', array|string|null $subfolders = null): string`
+```
+feminine/march/image-20260521183000.jpg
+```
 
-Replaces an existing file with a new one.
+## Methods
 
--   `$file`: New file.
--   `$oldFile`: Path of the old file to be removed.
--   `$disk`: Disk where the file is stored. Optional, default `public`.
--   `$subfolders`: Subfolder(s) where the file is stored. Optional.
+### `saveFile`
 
-Returns the path of the new file.
+Saves an uploaded file to a configured disk and returns the relative path that should be persisted.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `file` | Uploaded file that will be saved. |
+| `disk` | Disk where the file will be saved. When omitted, public is used. |
+| `subfolders` | Subfolder or list of subfolders within the disk. |
+
+**Example**
 
 ```php
-DiskHelper::updateFile($file, 'old.jpg');
-// "new-file-20251218173922.jpg"
-
-DiskHelper::updateFile($file, 'uploads/old.jpg', 'my-disk');
-// "uploads/new-file-20251218173922.jpg"
+$path = DiskHelper::saveFile($image, 'products', 'feminine');
 ```
 
----
+**Output**
 
-### `removeFile(string $file, ?string $disk = 'public', array|string|null $subfolders = null): bool`
+```
+feminine/image-20260521183000.jpg
+```
 
-Removes a file saved on the disk.
+### `updateFile`
 
--   `$file`: File path.
--   `$disk`: Disk where the file is stored. Optional, default `public`.
--   `$subfolders`: Subfolder(s) where the file is stored. Optional.
+Saves a new uploaded file and removes the previous file from the same disk and subfolders.
 
-Returns `true` if the file was removed, `false` otherwise.
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `newFile` | New uploaded file that will be saved. |
+| `oldFile` | Name of the old file, or relative path when subfolders are not used. |
+| `disk` | Disk where the old file exists and the new file will be saved. |
+| `subfolders` | Subfolder or list of subfolders used to locate the old file and save the new file. |
+
+**Example**
 
 ```php
-DiskHelper::removeFile('file.jpg');
-// true
-
-DiskHelper::removeFile('uploads/file.jpg', 'my-disk');
-// true
+$path = DiskHelper::updateFile($image, 'old.jpg', 'products', ['feminine', 'march']);
 ```
 
----
+**Output**
 
-### `fileSize(string $file, ?string $disk = 'public', array|string|null $subfolders = null): ?string`
+```
+feminine/march/image-20260521183000.jpg
+```
 
-Returns the formatted size of a file saved on the disk.
+### `removeFile`
 
--   `$file`: File path.
--   `$disk`: Disk where the file is stored. Optional, default `public`.
--   `$subfolders`: Subfolder(s) where the file is stored. Optional.
+Removes a file from a configured disk, with optional subfolder support.
 
-Returns a formatted string (e.g., `"256 KB"`) or `null` if the file does not exist.
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `file` | File name or relative path that will be removed. |
+| `disk` | Disk where the file is stored. |
+| `subfolders` | Subfolder or list of subfolders used to build the file path. |
+
+**Example**
 
 ```php
-DiskHelper::fileSize('image.jpg');
-// "256 KB"
-
-DiskHelper::fileSize('image.jpg', 'my-disk', ['archives','2025','dec','21']);
-// "256 KB"
+DiskHelper::removeFile('image.jpg', 'products', 'feminine');
 ```
 
----
+**Output**
 
-### `fileUrl(string $file, ?string $disk = 'public', array|string|null $subfolders = null): ?string`
+```
+true
+```
 
-Returns the public URL of a file stored on a disk.
+### `fileUrl`
 
--   `$file`: File path.
--   `$disk`: Disk where the file is stored. Optional, default `public`.
--   `$subfolders`: Subfolder(s) where the file is stored. Optional.
+Returns the public URL of an existing file on the given disk.
 
-Returns the public URL or `null` if the file does not exist.
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `file` | File name or relative path stored on the disk. |
+| `disk` | Disk where the file is stored. |
+| `subfolders` | Subfolder or list of subfolders used to build the file path. |
+
+**Example**
 
 ```php
-DiskHelper::fileUrl('image.jpg');
-// "https://mysite.com/storage/image.jpg"
-
-DiskHelper::fileUrl('uploads/image.jpg', 'my-disk');
-// "https://mysite.com/storage/my-disk/uploads/image.jpg"
+DiskHelper::fileUrl('avatar.jpg', 'public', 'avatars');
 ```
 
----
+**Output**
 
-## ✅ Important Notes
+```
+/storage/avatars/avatar.jpg
+```
 
--   The `$disk` parameter always refers to the disk configured in `config/filesystems.php`.
--   The `$subfolders` parameter can be a string (`'uploads'`) or an array (`['uploads','2025','dec']`).
--   The return value of `saveFile` is always the relative path within the disk, without the `public/` prefix.
+### `fileSize`
+
+Returns the formatted size of an existing file on the given disk.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `file` | File name or relative path stored on the disk. |
+| `disk` | Disk where the file is stored. |
+| `subfolders` | Subfolder or list of subfolders used to build the file path. |
+
+**Example**
+
+```php
+DiskHelper::fileSize('manual.pdf', 'public', 'downloads');
+```
+
+**Output**
+
+```
+256 KB
+```

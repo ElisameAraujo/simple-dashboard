@@ -1,80 +1,56 @@
 # RuleHelper
 
-O **RuleHelper** extrai valores de regras de validação do Laravel.
+Extrai valores de regras de validação textuais para manter limites da interface sincronizados com a validação.
 
-Ele é útil quando você quer reutilizar limites de validação na interface, como exibir a quantidade máxima de caracteres com base em uma regra `max:5000`.
+## Quando Usar
 
----
+- Use RuleHelper quando a interface precisa exibir o mesmo limite já definido nas regras de validação, como maxlength, contadores e textos auxiliares.
+- O helper extrai apenas regras textuais no formato rule:value, como max:120, min:3, size:10 ou between:3,120.
+- A fonte de regras pode ser um array direto, um objeto com formRules(), uma classe com formRules() estático ou uma classe com constantes públicas RULES, FORM_RULES ou REGRAS.
+- Objetos complexos de validação do Laravel são ignorados. O objetivo é ler valores textuais simples, não interpretar toda a API de validação.
 
-# Funções disponíveis
-
-## `extractValue(string $field, string $ruleName, string|array $rulesSource): ?string`
-
-Extrai o valor de uma regra de validação escrita no formato `rule:value`.
-
-A origem das regras pode ser:
-
-- um array de regras de validação;
-- o nome de uma classe que expõe um método estático `formRules()`.
-
-Se o campo ou a regra não forem encontrados, o método retorna `null`.
-
-### Exemplo com array
+## Exemplo
 
 ```php
 $rules = [
-    'comment' => ['required', 'string', 'max:5000'],
-];
-
-RuleHelper::extractValue('comment', 'max', $rules);
-// "5000"
-```
-
-### Exemplo com sintaxe por pipe
-
-```php
-$rules = [
-    'title' => 'required|string|max:120',
+    'title' => ['required', 'string', 'max:120'],
 ];
 
 RuleHelper::extractValue('title', 'max', $rules);
-// "120"
 ```
 
-### Exemplo com classe
+**Saída**
+
+```
+120
+```
+
+## Métodos
+
+### `extractValue`
+
+Retorna o valor de uma regra textual aplicada a um campo específico.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `field` | Campo cujas regras serão analisadas. |
+| `ruleName` | Nome da regra que será extraída, sem dois-pontos ou valor. |
+| `rulesSource` | Array de regras, objeto com formRules(), classe com formRules() estático ou classe com constante pública de regras. |
+
+**Exemplo**
 
 ```php
-class CreatePostData
-{
-    public static function formRules(): array
-    {
-        return [
-            'title' => ['required', 'string', 'max:120'],
-        ];
-    }
-}
+$rules = [
+    'comment' => ['required', 'max:5000'],
+];
 
-RuleHelper::extractValue('title', 'max', CreatePostData::class);
-// "120"
+RuleHelper::extractValue('comment', 'max', $rules);
 ```
 
----
+**Saída**
 
-# Caso de uso comum
-
-```blade
-@php
-    $maxLength = RuleHelper::extractValue('description', 'max', $this->formRules());
-@endphp
-
-<textarea maxlength="{{ $maxLength }}"></textarea>
 ```
-
----
-
-# Observações
-
-- Apenas regras em string no formato `rule:value` podem ser extraídas.
-- Regras baseadas em objetos, como `Rule::unique(...)`, são ignoradas.
-- O valor retornado é uma string porque ele é extraído do texto original da regra.
-
+5000
+```

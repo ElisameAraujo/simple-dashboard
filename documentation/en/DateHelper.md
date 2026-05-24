@@ -1,175 +1,357 @@
-# 📆 DateHelper
+# DateHelper
 
-The **DateHelper** provides utility functions for data formatting fully integrated with the **application language** and the **timezone configured in the `.env` file**.
+Formats dates, relative intervals, and email-friendly date labels with localized output.
 
-It uses:
+## When To Use
 
--   `LocaleHelper::resolveLocale()` to determine the language
--   `config('app.timezone')` to apply the timezone
--   Translation files `resources/lang/{locale}/dates.php`
+- Use DateHelper when dates need to be displayed for people, not only stored or compared.
+- The helper resolves the requested locale, loads the project date translations, and applies the application timezone before formatting.
 
-(where months, days of the week, formats, and humanized text are stored)
+## Example
 
-Then, **all information is automatically displayed in the correct language**, without the need for manual adjustments.
+```php
+DateHelper::simpleDate('2026-05-19', 'en_US');
+```
 
----
+**Output**
 
-## 📂 Available Functions
+```
+05/19/2026
+```
 
----
+## Methods
 
-### `currentYear()`
+### `currentYear`
 
-Returns the current year in the format `YYYY`.
+Returns the current year as four digits.
+
+**Example**
 
 ```php
 DateHelper::currentYear();
-// 2025
 ```
 
----
+**Output**
 
-### `currentDate()`
+```
+2026
+```
 
-Returns the current date using the format defined in `dates.php` for the active language.
+### `currentDate`
 
-Example _**(pt_BR)**_:
+Returns the current date using the format configured for the given locale.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `locale` | Locale used to define the output format. When omitted, the current application locale is used. |
+
+**Example**
 
 ```php
-DateHelper::currentDate();
-// 28/10/2025
+DateHelper::currentDate('en_US');
 ```
 
-Example _**(en_US)**_:
+**Output**
+
+```
+05/21/2026
+```
+
+### `fullCurrentDate`
+
+Returns the current date in full, with translated weekday and month names.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `locale` | Locale used to translate the weekday, month, and final format. |
+
+**Example**
 
 ```php
-DateHelper::currentDate();
-// 10/28/2025
+DateHelper::fullCurrentDate('en_US');
 ```
 
----
+**Output**
 
-### `fullCurrentDate()`
+```
+Thursday, May 21, 2026
+```
 
-Returns the current date in full, with the day of the week and month translated.
+### `fullExtendedDate`
+
+Formats a date string using the locale's full date format.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date that will be formatted. |
+| `locale` | Locale used to translate the weekday, month, and final format. |
+
+**Example**
 
 ```php
-DateHelper::fullCurrentDate();
-// domingo, 18 de outubro de 2025
+DateHelper::fullExtendedDate('2026-05-19', 'en_US');
 ```
 
----
+**Output**
 
-### `fullExtendedDate(string $date)`
+```
+Tuesday, May 19, 2026
+```
 
-Formats a date received as a string using the full language format.
+### `currentFullDateWithHours`
+
+Formats a date in full including the time.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date and time that will be formatted. |
+| `locale` | Locale used to translate and build the final output. |
+
+**Example**
 
 ```php
-DateHelper::fullExtendedDate('2025-10-16');
-// domingo, 16 de outubro de 2025
+DateHelper::currentFullDateWithHours('2026-05-19 10:30:00', 'en_US');
 ```
 
----
+**Output**
 
-### `currentFullDateWithHours(string $date)`
+```
+May 19, 2026 at 10:30
+```
 
-Formats a date in words + time, using the format defined in the language.
+### `diffDatesHuman`
+
+Returns the difference between a date and the current moment in human-readable text.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date that will be compared with the current moment. |
+| `locale` | Locale used to translate units such as minutes, hours, days, and months. |
+
+**Example**
 
 ```php
-DateHelper::currentFullDateWithHours('2025-10-18 13:26');
-// 18 de outubro de 2025 às 13:26
+DateHelper::diffDatesHuman('2026-05-19 11:58:00', 'en_US');
 ```
 
----
+**Output**
 
-### `diffDatesHuman(string $date)`
+```
+2 minutes ago
+```
 
-Returns the difference between the current date and the present time in a humanized format.
+### `dateWithHoursAndSeconds`
+
+Formats a date with hour, minute, and second.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date and time that will be formatted. |
+| `locale` | Locale used to define the output format. |
+
+**Example**
 
 ```php
-DateHelper::diffDatesHuman('2025-10-18 18:36:41');
-// 20 segundos atrás
-
-DateHelper::diffDatesHuman('2025-08-18 18:36:41');
-// 2 meses atrás
-
-DateHelper::diffDatesHuman('2025-12-18 18:36:41');
-// daqui a 2 meses
+DateHelper::dateWithHoursAndSeconds('2026-05-19 10:30:15', 'en_US');
 ```
 
----
+**Output**
 
-### `dateWithHoursAndSeconds(string $date)`
+```
+05/19/2026 10:30:15
+```
 
-Formats a date with time and seconds, using the format defined in the language.
+### `dateExcel`
+
+Formats a date using the spreadsheet-friendly pattern for the given locale.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date that will be formatted. |
+| `locale` | Locale used to define the date pattern. |
+
+**Example**
 
 ```php
-DateHelper::dateWithHoursAndSeconds('2025-08-18 18:36:41');
-// 18/08/2025 às 18:36:41
+DateHelper::dateExcel('2026-05-19', 'en_US');
 ```
 
----
+**Output**
 
-### `dateWithHours(string $date)`
+```
+05/19/2026
+```
 
-Format a date with time (without seconds).
+### `dateWithHours`
+
+Formats a date with hour and minute, without seconds.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date and time that will be formatted. |
+| `locale` | Locale used to define the output format. |
+
+**Example**
 
 ```php
-DateHelper::dateWithHours('2025-08-18 18:36:41');
-// 18/08/2025 às 18:36
+DateHelper::dateWithHours('2026-05-19 10:30:15', 'en_US');
 ```
 
----
+**Output**
 
-### `simpleDate(string $date)`
+```
+05/19/2026 10:30
+```
 
-Formats a simple date (day, month, and year) according to the language.
+### `simpleDate`
+
+Formats a simple date with day, month, and year.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date that will be formatted. |
+| `locale` | Locale used to define the output format. |
+
+**Example**
 
 ```php
-DateHelper::simpleDate('2025-08-18');
-// 18/08/2025
+DateHelper::simpleDate('2026-05-19', 'en_US');
 ```
 
----
+**Output**
 
-### `isTodayCheck(string $date)`
+```
+05/19/2026
+```
 
-Check if the date entered is the current day.
+### `isTodayCheck`
+
+Checks whether the given date is today.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date that will be compared with today. |
+
+**Example**
 
 ```php
-DateHelper::isTodayCheck('2025-08-18');
-// true
+DateHelper::isTodayCheck('2026-05-21');
 ```
 
----
+**Output**
 
-### `daysDifference(string $startDate, string $endDate)`
+```
+true
+```
+
+### `daysDifference`
 
 Returns the difference in days between two dates.
 
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `startDate` | Start date used in the calculation. |
+| `endDate` | End date used in the calculation. |
+
+**Example**
+
 ```php
-DateHelper::daysDifference('2025-12-15', '2025-12-18');
-// 3
+DateHelper::daysDifference('2026-05-19', '2026-05-22');
 ```
 
----
+**Output**
 
-### `shortDate(string $date)`
-
-It displays only the day and month, using the short format for the language.
-
-```php
-DateHelper::shortDate('2025-12-15');
-// 15/12
+```
+3
 ```
 
----
+### `shortDate`
 
-### `shortTime(string $date)`
+Displays only the day and month using the locale's short format.
 
-It displays only the hour and minute, using the short format for the language.
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date that will be formatted. |
+| `locale` | Locale used to define the short format. |
+
+**Example**
 
 ```php
-DateHelper::shortTime('2025-12-15 14:36:52');
-// 14:36
+DateHelper::shortDate('2026-05-19', 'en_US');
+```
+
+**Output**
+
+```
+May 19
+```
+
+### `shortTime`
+
+Displays only hour and minute.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date and time that will be formatted. |
+| `locale` | Locale used to define the time format. |
+
+**Example**
+
+```php
+DateHelper::shortTime('2026-05-19 10:30:15', 'en_US');
+```
+
+**Output**
+
+```
+10:30
+```
+
+### `emailDate`
+
+Formats a date for email display by combining a short date and relative time.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `date` | Date and time that will be formatted. |
+| `locale` | Locale used to translate the date and relative time. |
+
+**Example**
+
+```php
+DateHelper::emailDate('2026-05-19 11:58:00', 'en_US');
+```
+
+**Output**
+
+```
+Tue, may. 19, 11:58 (2 minutes ago)
 ```

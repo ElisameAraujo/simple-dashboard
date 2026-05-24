@@ -1,80 +1,56 @@
 # RuleHelper
 
-The **RuleHelper** extracts values from Laravel validation rules.
+Extracts values from textual validation rules so interface limits stay synchronized with validation.
 
-It is useful when you want to reuse validation limits in the interface, such as showing a maximum number of characters based on a `max:5000` rule.
+## When To Use
 
----
+- Use RuleHelper when the interface needs to display the same limit already defined in validation rules, such as maxlength, counters, and helper text.
+- The helper only extracts textual rules in the rule:value format, such as max:120, min:3, size:10, or between:3,120.
+- The rules source may be a direct array, an object with formRules(), a class with static formRules(), or a class with public RULES, FORM_RULES, or REGRAS constants.
+- Complex Laravel validation rule objects are ignored. The goal is to read simple textual values, not interpret the full validation API.
 
-# Available Functions
-
-## `extractValue(string $field, string $ruleName, string|array $rulesSource): ?string`
-
-Extracts the value from a validation rule written as `rule:value`.
-
-The rule source can be:
-
-- an array of validation rules;
-- a class name that exposes a static `formRules()` method.
-
-If the field or rule is not found, the method returns `null`.
-
-### Example with an array
+## Example
 
 ```php
 $rules = [
-    'comment' => ['required', 'string', 'max:5000'],
-];
-
-RuleHelper::extractValue('comment', 'max', $rules);
-// "5000"
-```
-
-### Example with pipe syntax
-
-```php
-$rules = [
-    'title' => 'required|string|max:120',
+    'title' => ['required', 'string', 'max:120'],
 ];
 
 RuleHelper::extractValue('title', 'max', $rules);
-// "120"
 ```
 
-### Example with a class
+**Output**
+
+```
+120
+```
+
+## Methods
+
+### `extractValue`
+
+Returns the value of a textual rule applied to a specific field.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Field whose rules will be inspected. |
+| `ruleName` | Rule name that should be extracted, without colon or value. |
+| `rulesSource` | Rules array, object with formRules(), class with static formRules(), or class with a public rules constant. |
+
+**Example**
 
 ```php
-class CreatePostData
-{
-    public static function formRules(): array
-    {
-        return [
-            'title' => ['required', 'string', 'max:120'],
-        ];
-    }
-}
+$rules = [
+    'comment' => ['required', 'max:5000'],
+];
 
-RuleHelper::extractValue('title', 'max', CreatePostData::class);
-// "120"
+RuleHelper::extractValue('comment', 'max', $rules);
 ```
 
----
+**Output**
 
-# Common Use Case
-
-```blade
-@php
-    $maxLength = RuleHelper::extractValue('description', 'max', $this->formRules());
-@endphp
-
-<textarea maxlength="{{ $maxLength }}"></textarea>
 ```
-
----
-
-# Notes
-
-- Only string rules in the `rule:value` format can be extracted.
-- Object-based rules, such as `Rule::unique(...)`, are ignored.
-- The return value is a string because validation rule values are extracted from the original rule text.
-
+5000
+```

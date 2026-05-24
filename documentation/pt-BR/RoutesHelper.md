@@ -1,197 +1,89 @@
-# 🚦 RouteHelper
+# RouteHelper
 
-O **RouteHelper** é uma classe utilitária que facilita a organização e importação de arquivos de rota no Laravel.  
-Ele oferece duas formas principais de carregar rotas:
+Importa arquivos de rotas organizados em pastas dentro de routes/ e lista as rotas registradas da aplicação.
 
--   **importRouteFile** → Importa um arquivo específico
--   **importRoutesFromFolder** → Importa todos os arquivos de uma pasta (com subpastas opcionais e exclusões)
+## Quando Usar
 
-Além disso, inclui um método para listar todas as rotas registradas na aplicação.
+- Use RouteHelper para manter routes/web.php enxuto quando o projeto separa rotas por áreas como demo, admin, auth ou web.
+- importRoutesFromFolder() é o fluxo principal. Ele carrega os arquivos .php diretamente dentro da pasta final informada.
+- O import por pasta não é recursivo. Para carregar routes/web/home/secoes/*.php, informe web como rootFolder e ['home', 'secoes'] como subfolders.
+- Os nomes de arquivo são protegidos contra extensões inválidas e os caminhos são validados para permanecer dentro de routes/.
 
----
-
-# 📌 Estrutura Geral
-
-O helper trabalha sempre dentro da pasta:
-
-```
-routes/
-```
-
-E permite navegar por subpastas de forma simples e previsível.
-
----
-
-# 📂 Funções Disponíveis
-
----
-
-## `importRouteFile(string $filename, string|array|null $folders = null)`
-
-Importa **um único arquivo de rota**, localizado em `routes/` ou em subpastas.
-
-### **Exemplo 1 — arquivo na raiz**
+## Exemplo
 
 ```php
-RouteHelper::importRouteFile('admin');
+RouteHelper::importRoutesFromFolder('demo', 'helpers');
 ```
 
-Carrega:
+**Saída**
 
 ```
-routes/admin.php
+Arquivos .php diretos de routes/demo/helpers carregados.
 ```
 
----
+## Métodos
 
-### **Exemplo 2 — arquivo em uma subpasta**
+### `importRouteFile`
+
+Importa um único arquivo de rota dentro de routes/ ou de uma subpasta.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `filename` | Nome do arquivo de rota. Prefira informar sem .php; uma única extensão .php também é aceita. |
+| `folders` | Pasta ou lista de pastas dentro de routes/ onde o arquivo está localizado. |
+
+**Exemplo**
 
 ```php
-RouteHelper::importRouteFile('users', 'admin');
+RouteHelper::importRouteFile('helper-routes', ['demo', 'helpers']);
 ```
 
-Carrega:
+**Saída**
 
 ```
-routes/admin/users.php
+routes/demo/helpers/helper-routes.php carregado.
 ```
 
----
+### `importRoutesFromFolder`
 
-### **Exemplo 3 — arquivo em múltiplos níveis de subpastas**
+Importa todos os arquivos .php diretamente dentro de uma pasta de rotas, com suporte a subpastas e exclusões.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `rootFolder` | Pasta principal dentro de routes/. |
+| `subfolders` | Subpasta ou lista de subpastas dentro da pasta principal. |
+| `except` | Nome ou lista de arquivos que devem ser ignorados no carregamento. |
+
+**Exemplo**
 
 ```php
-RouteHelper::importRouteFile('orders', ['ecommerce', 'v2']);
+RouteHelper::importRoutesFromFolder('demo', ['helpers'], 'legacy-routes');
 ```
 
-Carrega:
+**Saída**
 
 ```
-routes/ecommerce/v2/orders.php
+Arquivos .php diretos de routes/demo/helpers carregados, exceto legacy-routes.php.
 ```
 
----
+### `listAllRoutes`
 
-## `importRoutesFromFolder(string $rootFolder, string|array|null $subfolders = null, string|array|null $except = null)`
+Retorna um inventário simples das rotas registradas, incluindo URI, nome, método HTTP e action.
 
-Importa **todos os arquivos `.php`** dentro de uma pasta específica, com suporte a:
-
--   subpastas opcionais
--   exclusão de arquivos específicos
-
-Essa função é ideal quando você organiza suas rotas por módulos ou seções.
-
----
-
-## Estrutura
-
--   `$rootFolder`: Pasta raiz dentro de `routes/`
--   `$subfolders` _(opcional)_: Recebe uma string ou um array de subpastas em que o arquivo de rotas está localizado. Se ignorado, ele irá importar os arquivos de rota apenas na raiz da pasta que está dentro de `routes/`. Se passado algum valor, irá buscar apenas os arquivos que estão dentro da subpasta.
--   `$except` _(opcional)_: Também é opcional. Aqui você pode definir quais arquivos deseja ignorar dentro da pasta raiz. Se nenhum valor for passado, ele irá importar todos os arquivos.
-
----
-
-# 🧪 Exemplos de Uso
-
----
-
-## ✔ Importar todos os arquivos da pasta raiz
+**Exemplo**
 
 ```php
-RouteHelper::importRoutesFromFolder('admin');
+RouteHelper::listAllRoutes();
 ```
 
-Carrega:
+**Saída**
 
 ```
-routes/admin/*.php
-```
-
----
-
-## ✔ Importar arquivos de uma subpasta
-
-```php
-RouteHelper::importRoutesFromFolder('admin', 'v2');
-```
-
-Carrega:
-
-```
-routes/admin/v2/*.php
-```
-
----
-
-## ✔ Importar arquivos de múltiplas subpastas (hierarquia)
-
-```php
-RouteHelper::importRoutesFromFolder('admin', ['ecommerce', 'v2']);
-```
-
-Carrega:
-
-```
-routes/admin/ecommerce/v2/*.php
-```
-
----
-
-## ✔ Importar tudo, exceto alguns arquivos
-
-```php
-RouteHelper::importRoutesFromFolder('admin', null, ['auth', 'debug']);
-```
-
-Ignora:
-
-```
-routes/admin/auth.php
-routes/admin/debug.php
-```
-
----
-
-## ✔ Importar de subpastas e ignorar arquivos específicos
-
-```php
-RouteHelper::importRoutesFromFolder('admin', ['ecommerce', 'v2'], 'experimental');
-```
-
-Ignora:
-
-```
-routes/admin/ecommerce/v2/experimental.php
-```
-
----
-
-## `listAllRoutes()`
-
-Retorna uma lista com todas as rotas registradas na aplicação.
-
-### Exemplo:
-
-```php
-$routes = RouteHelper::listAllRoutes();
-```
-
-Retorno:
-
-```php
 [
-    [
-        'uri' => 'admin/users',
-        'name' => 'admin.users.index',
-        'method' => 'GET|HEAD',
-        'action' => 'App\Http\Controllers\Admin\UserController@index',
-    ],
-    ...
+    ['uri' => 'helpers', 'name' => 'helpers.index', 'method' => 'GET|HEAD', 'action' => 'App\Http\Controllers\Admin\HelpersController@index'],
 ]
 ```
-
-Útil para:
-
--   debug
--   geração de documentação
--   inspeção de rotas em ambiente de desenvolvimento

@@ -1,135 +1,132 @@
-# 🔔 NotificationHelper
+# NotificationHelper
 
-The **NotificationHelper** class provides utility functions for managing user notifications in Laravel.  
-It simplifies common operations such as listing unread notifications, counting, marking as read/unread, removing, and querying history.
+Reads and counts authenticated user notifications for dropdowns, badges, and notification list screens.
 
----
+## When To Use
 
-## 📂 Available Functions
+- Use NotificationHelper when a view, Livewire component, or controller needs authenticated user notifications without repeating Auth checks.
+- The helper is read-focused. Actions such as marking as read, marking all as read, or deleting notifications should live in the Controller or Livewire component that owns the interaction.
+- latestNotifications() powers short summaries, such as the header dropdown; allUnreadNotifications() powers complete pending lists that do not fit in the summary.
+- When there is no authenticated user, list methods return an empty Collection and count methods return 0.
 
-### `unreadNotificationsByType(string $type, ?string $subfolder = null, ?int $limit = 5)`
-
-Lists **unread** notifications of a specific type.
-
--   `$type`: Name of the notification class.
--   `$subfolder`: Subfolder within `App\Notifications`. Optional.
--   `$limit`: Limit of records returned. Optional, default `5`.
+## Example
 
 ```php
-NotificationHelper::unreadNotificationsByType('NewMessageNotification', 'User', 10);
+$unreadCount = NotificationHelper::allUnreadNotificationsCount();
+$dropdownNotifications = NotificationHelper::latestNotifications(10);
 ```
 
----
+**Output**
 
-### `unreadNotificationsByTypeCount(string $type, ?string $subfolder = null): int`
+```
+15 unread notifications and 10 items for the dropdown.
+```
 
-Returns the **total number of unread** notifications of a specific type.
+## Methods
+
+### `unreadNotificationsByType`
+
+Lists unread notifications of a specific notification class.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `type` | Notification class name or fully qualified class name. |
+| `subfolder` | Optional subfolder inside App\Notifications, such as User. |
+| `limit` | Optional maximum number of returned records. When null or below 1, all matching records are returned. |
+
+**Example**
+
+```php
+NotificationHelper::unreadNotificationsByType('NewMessageNotification', 'User', 5);
+```
+
+**Output**
+
+```
+Collection with up to 5 unread notifications of type App\Notifications\User\NewMessageNotification.
+```
+
+### `unreadNotificationsByTypeCount`
+
+Counts unread notifications of a specific notification class.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `type` | Notification class name or fully qualified class name. |
+| `subfolder` | Optional subfolder inside App\Notifications, such as User. |
+
+**Example**
 
 ```php
 NotificationHelper::unreadNotificationsByTypeCount('NewMessageNotification', 'User');
-// 3
 ```
 
----
+**Output**
 
-### `allUnreadNotifications(?int $limit = 10)`
+```
+3
+```
 
-Lists **all unread notifications** from the user.
+### `allUnreadNotifications`
 
--   `$limit`: Limit of records returned. Optional, default `10`.
+Lists all unread notifications for the authenticated user, with an optional limit.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `limit` | Optional maximum number of returned records. When null, all unread notifications are returned. |
+
+**Example**
 
 ```php
-NotificationHelper::allUnreadNotifications(20);
+NotificationHelper::allUnreadNotifications();
 ```
 
----
+**Output**
 
-### `allUnreadNotificationsCount(): int`
+```
+Collection with all unread notifications.
+```
 
-Returns the **total count of all unread** notifications from the user.
+### `allUnreadNotificationsCount`
+
+Counts all unread notifications for the authenticated user.
+
+**Example**
 
 ```php
 NotificationHelper::allUnreadNotificationsCount();
-// 12
 ```
 
----
+**Output**
 
-### `markAllAsRead(): void`
+```
+15
+```
 
-Marks **all unread notifications** as read.
+### `latestNotifications`
+
+Lists the authenticated user's latest notifications, read or unread, for summaries such as dropdowns.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `limit` | Maximum number of returned notifications. When null or below 1, all notifications are returned. |
+
+**Example**
 
 ```php
-NotificationHelper::markAllAsRead();
+NotificationHelper::latestNotifications(10);
 ```
 
----
+**Output**
 
-### `markAllAsReadByType(string $type, ?string $subfolder = null): void`
-
-Marks **all unread notifications of a specific type** as read.
-
-```php
-NotificationHelper::markAllAsReadByType('NewMessageNotification', 'User');
 ```
-
----
-
-### `latestNotifications(?int $limit = 10)`
-
-Lists the **latest notifications** (read or unread).
-
--   `$limit`: Limit of records returned. Optional, default `10`.
-
-```php
-NotificationHelper::latestNotifications(15);
+Collection with the 10 latest notifications.
 ```
-
----
-
-### `markAsRead(string $notificationId): bool`
-
-Marks a **specific notification** as read.
-
--   `$notificationId`: Notification ID.
-
-```php
-NotificationHelper::markAsRead('12345-uuid');
-// true
-```
-
----
-
-### `markAsUnread(string $notificationId): bool`
-
-Marks a **specific notification** as unread.
-
--   `$notificationId`: Notification ID.
-
-```php
-NotificationHelper::markAsUnread('12345-uuid');
-// true
-```
-
----
-
-### `deleteNotification(string $notificationId): bool`
-
-Removes a **specific notification**.
-
--   `$notificationId`: Notification ID.
-
-```php
-NotificationHelper::deleteNotification('12345-uuid');
-// true
-```
-
----
-
-## ✅ Important Notes
-
--   All functions check if the user is authenticated (`Auth::check()`).
--   If the user is not authenticated, functions that return lists return an empty `Collection` and functions that return counts return `0`.
--   Notification IDs are generally UUIDs generated by Laravel.
--   Marking methods (`markAsRead`, `markAsUnread`, `markAllAsRead`, `markAllAsReadByType`) update the `read_at` field.
--   `deleteNotification` permanently removes the notification from the database.

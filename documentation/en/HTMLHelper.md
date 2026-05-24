@@ -1,304 +1,392 @@
 # HTMLHelper
 
-The **HTMLHelper** generates fake HTML content for seeders, factories, demos, and development tests.
+Builds fake HTML blocks for demos, editor previews, and content placeholders.
 
-It uses Faker internally and exposes a fluent API, allowing you to chain multiple HTML blocks and finish with `generate()`.
+## When To Use
 
-> This helper is meant to create sample content. It is not an HTML sanitizer and should not be used to clean user input.
+- Use HTMLHelper when you need to fill a page with fake HTML markup that still looks structurally close to real content.
+- The helper starts with make(), chains builder methods such as heading(), paragraphs(), lists, images, videos, tables, and grids, then finishes with generate().
+- Text, links, images, and videos are generated with Faker, so the content changes on each execution while the HTML structure stays predictable.
 
----
-
-# Available Functions
-
-## `make(): static`
-
-Creates a new HTML builder instance.
-
-### Example
+## Example
 
 ```php
-$html = HTMLHelper::make()
-    ->heading()
-    ->paragraphs(2)
+echo HTMLHelper::make()
+    ->heading(2)
+    ->paragraphs(1)
     ->generate();
 ```
 
----
+**Output**
 
-## `heading(int|string|null $level = 2): static`
-
-Adds a heading with random title text.
-
-### Example
-
-```php
-HTMLHelper::make()
-    ->heading(1)
-    ->generate();
-
-// <h1>...</h1>
+```
+<h2>Example Title</h2><p>Generated paragraph for preview.</p>
 ```
 
----
+## Methods
 
-## `headingWithLink(int|string|null $level = 2): static`
+### `make`
 
-Adds a heading containing a random link.
+Starts a new fluent HTML generator chain.
 
-### Example
+**Example**
 
 ```php
 HTMLHelper::make()
-    ->headingWithLink(2)
+    ->heading(2)
     ->generate();
-
-// <h2>...<a href="#">...</a>...</h2>
 ```
 
----
+**Output**
 
-## `emptyParagraph(): static`
+```
+<h2>Example Title</h2>
+```
 
-Adds an empty paragraph.
+### `heading`
 
-### Example
+Adds a heading tag with generated title-style text.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `level` | Heading level between 1 and 6. Invalid, empty, or out-of-range values use 2. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->emptyParagraph()
-    ->generate();
-
-// <p></p>
+HTMLHelper::make()->heading(2)->generate();
 ```
 
----
+**Output**
 
-## `paragraphs(int $count = 1, bool $withRandomLinks = false): static`
+```
+<h2>Example Title</h2>
+```
 
-Adds one or more paragraphs.
+### `headingWithLink`
 
-When `$withRandomLinks` is `true`, each generated paragraph receives a random link inside the text.
+Adds a heading with generated text and a link in the middle of the content.
 
-### Examples
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `level` | Heading level between 1 and 6. Invalid, empty, or out-of-range values use 2. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->paragraphs(3)
-    ->generate();
+HTMLHelper::make()->headingWithLink(2)->generate();
 ```
+
+**Output**
+
+```
+<h2>Generated Title <a href="#">Example Link</a> Final Text</h2>
+```
+
+### `emptyParagraph`
+
+Adds an empty paragraph, useful for testing spacing and contentless states.
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->paragraphs(2, true)
-    ->generate();
+HTMLHelper::make()->emptyParagraph()->generate();
 ```
 
----
+**Output**
 
-## `unorderedList(int $count = 1): static`
+```
+<p></p>
+```
 
-Adds an unordered list with random words.
+### `paragraphs`
 
-### Example
+Adds one or more generated paragraphs, with an option to insert random links inside the text.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `count` | Number of paragraphs that will be generated. Values below 1 use 1. |
+| `withRandomLinks` | When true, each paragraph receives a fake link at a random position. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->unorderedList(4)
-    ->generate();
-
-// <ul><li>...</li>...</ul>
+HTMLHelper::make()->paragraphs(1, true)->generate();
 ```
 
----
+**Output**
 
-## `orderedList(int $count = 1): static`
+```
+<p>Generated text with <a href="https://example.com">Generated Link</a> inside the paragraph.</p>
+```
 
-Adds an ordered list with random words.
+### `unorderedList`
 
-### Example
+Adds an unordered list with generated items.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `count` | Number of items that will be generated. Values below 1 use 1. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->orderedList(4)
-    ->generate();
-
-// <ol><li>...</li>...</ol>
+HTMLHelper::make()->unorderedList(3)->generate();
 ```
 
----
+**Output**
 
-## `image(?int $width = 640, ?int $height = 480): static`
+```
+<ul><li>first</li><li>second</li><li>third</li></ul>
+```
 
-Adds a fake image tag using Faker's image URL generator.
+### `orderedList`
 
-### Example
+Adds an ordered list with generated items.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `count` | Number of items that will be generated. Values below 1 use 1. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->image(800, 450)
-    ->generate();
-
-// <img src="..." alt="..." width="800" height="450">
+HTMLHelper::make()->orderedList(3)->generate();
 ```
 
----
+**Output**
 
-## `link(): static`
+```
+<ol><li>first</li><li>second</li><li>third</li></ol>
+```
 
-Adds a random link.
+### `image`
 
-### Example
+Adds a generated image with src, alt, width, and height.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `width` | Width applied to the image URL and width attribute. Invalid values use 640. |
+| `height` | Height applied to the image URL and height attribute. Invalid values use 480. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->link()
-    ->generate();
-
-// <a href="...">...</a>
+HTMLHelper::make()->image(640, 480)->generate();
 ```
 
----
+**Output**
 
-## `video(?string $provider = 'youtube', ?int $width = 640, ?int $height = 480): static`
+```
+<img src="https://via.placeholder.com/640x480.png/00aa33?text=demo" alt="Generated alt text." width="640" height="480">
+```
 
-Adds an embedded video iframe.
+### `link`
 
-Supported providers:
+Adds a generated link with a fake URL and text.
 
-- `youtube`
-- `vimeo`
-
-### Examples
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->video('youtube')
-    ->generate();
+HTMLHelper::make()->link()->generate();
 ```
+
+**Output**
+
+```
+<a href="https://example.com">Example link</a>
+```
+
+### `video`
+
+Adds a generated video iframe for YouTube or Vimeo.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `provider` | Provider used in the embed. Accepts youtube or vimeo; other values use youtube. |
+| `width` | Width applied to the iframe. Invalid values use 640. |
+| `height` | Height applied to the iframe. Invalid values use 480. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->video('vimeo', 800, 450)
-    ->generate();
+HTMLHelper::make()->video('youtube', 640, 480)->generate();
 ```
 
----
+**Output**
 
-## `details(): static`
+```
+<iframe width="640" height="480" src="https://www.youtube.com/embed/abc123def45" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+```
 
-Adds a `details` block with a random summary and paragraph.
+### `details`
 
-### Example
+Adds a details block with a summary and generated content.
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->details()
-    ->generate();
+HTMLHelper::make()->details()->generate();
 ```
 
----
+**Output**
 
-## `code(?string $className = 'hljs'): static`
+```
+<details><summary>Generated question?</summary><div>Generated detail content for testing.</div></details>
+```
 
-Adds a code block wrapped in `pre` and `code`.
+### `code`
 
-### Example
+Adds a pre/code block with an optional CSS class.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `className` | CSS class applied to the pre element. Empty values use hljs. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->code()
-    ->generate();
-
-// <pre class="hljs"><code>...</code></pre>
+HTMLHelper::make()->code('hljs')->generate();
 ```
 
----
+**Output**
 
-## `blockquote(): static`
+```
+<pre class="hljs"><code>export default function testComponent({
 
-Adds a random blockquote.
+state,
 
-### Example
+}) {
+
+return {
+
+state,
+
+init: function () {
+
+// Initialise the Alpine component here, if you need to.
+
+},
+
+}
+
+}</code></pre>
+```
+
+### `blockquote`
+
+Adds a generated quote.
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->blockquote()
-    ->generate();
+HTMLHelper::make()->blockquote()->generate();
 ```
 
----
+**Output**
 
-## `hr(): static`
+```
+<blockquote>Generated quote.</blockquote>
+```
+
+### `hr`
 
 Adds a horizontal rule.
 
-### Example
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->hr()
-    ->generate();
-
-// <hr>
+HTMLHelper::make()->hr()->generate();
 ```
 
----
+**Output**
 
-## `br(): static`
+```
+<hr>
+```
+
+### `br`
 
 Adds a line break.
 
-### Example
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->br()
-    ->generate();
-
-// <br>
+HTMLHelper::make()->br()->generate();
 ```
 
----
+**Output**
 
-## `table(): static`
+```
+<br>
+```
 
-Adds a fake table with a header and two body rows.
+### `table`
 
-### Example
+Adds a generated table with a header and two content rows.
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->table()
-    ->generate();
+HTMLHelper::make()->table()->generate();
 ```
 
----
+**Output**
 
-## `grid(array $cols = [1, 1, 1]): static`
+```
+<table><thead><tr><th>Name</th><th>Status</th><th>Category</th></tr></thead><tbody><tr><td>Demo</td><td>Active</td><td>Blog</td></tr><tr><td>Preview</td><td>Draft</td><td>Product</td></tr></tbody></table>
+```
 
-Adds a basic grid structure with random content in each column.
+### `grid`
 
-### Example
+Adds a responsive grid where each item uses the span defined in the columns array.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `cols` | Array of spans for the grid items. For example, [1, 2, 1] creates three items distributed across four columns. |
+
+**Example**
 
 ```php
-HTMLHelper::make()
-    ->grid([1, 1, 1])
-    ->generate();
+HTMLHelper::make()->grid([1, 2, 1])->generate();
 ```
 
----
+**Output**
 
-## `generate(): string`
+```
+<div class="grid" data-type="responsive" data-cols="4" style="grid-template-columns: repeat(4, 1fr);" data-stack-at="md"><div class="grid__column" data-col-span="1" style="grid-column: span 1;">...</div><div class="grid__column" data-col-span="2" style="grid-column: span 2;">...</div><div class="grid__column" data-col-span="1" style="grid-column: span 1;">...</div></div>
+```
 
-Returns the generated HTML string.
+### `generate`
 
-### Example
+Returns all HTML accumulated in the method chain.
+
+**Example**
 
 ```php
-$html = HTMLHelper::make()
-    ->heading()
-    ->paragraphs(2)
-    ->unorderedList(3)
-    ->generate();
+HTMLHelper::make()->heading(2)->generate();
 ```
 
+**Output**
+
+```
+<h2>Example Title</h2>
+```

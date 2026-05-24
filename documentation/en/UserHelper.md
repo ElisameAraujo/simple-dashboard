@@ -1,302 +1,487 @@
-# 🧩 UserHelper
+# UserHelper
 
-The UserHelper provides utility functions to access information about the authenticated user, generate derived data (such as initials, avatar fallback, abbreviated name), manipulate email, and integrate with the Spatie/Laravel Permission package.
+Provides defensive shortcuts for authenticated user data, avatar output, email handling, summaries, and optional Spatie Permission integration.
 
-It centralizes common user-related operations, reduces code duplication, and keeps the dashboard cleaner and more consistent.
+## When To Use
 
----
+- Use UserHelper in views, headers, menus, and admin components that need simple authenticated user data without repeating Auth checks.
+- info() reads only direct attributes from the User model. It does not load relationships and returns the fallback when the user or column does not exist.
+- userIsActive() is configurable for projects that use booleans, status strings, or numeric identifiers to represent active users.
+- Spatie methods are optional. They return safe values when the package is installed but the User model has not implemented HasRoles yet.
 
-# 📂 Available Functions
-
----
-
-## `userLogged(): bool`
-
-Checks if there is an authenticated user.
-
-### Example
-
-```php
-if (UserHelper::userLogged()) {
-    // Authenticated user
-}
-```
-
----
-
-## `info(string $column, $default = null)`
-
-Returns any column of the authenticated user.
-
-### Parameters
-
-| Parameter  | Type   | Description                                |
-| ---------- | ------ | ------------------------------------------ |
-| `$column`  | string | Column name in the User model              |
-| `$default` | mixed  | Value returned if the column doesn't exist |
-
-### Example
-
-```php
-UserHelper::info('created_at');
-//2025-08-17 12:36:44
-```
-
----
-
-## `userIsActive(string $column = 'active'): bool`
-
-Checks if a boolean column indicates that the user is active.
-
-### Example
-
-```php
-UserHelper::userIsActive(); // uses "active"
-UserHelper::userIsActive('status'); // custom column
-```
-
----
-
-## `userId(string $column = 'id')`
-
-Returns the user's ID.
-
----
-
-## `username(string $column = 'name')`
-
-Returns the user's full name.
-
----
-
-## `userFirstName(string $column = 'name')`
-
-Returns only the first name.
-
-### Example
-
-```php
-UserHelper::userFirstName(); // "John"
-```
-
----
-
-## `userShortName(string $column = 'name')`
-
-Returns name + abbreviated last name.
-
-### Example
-
-```php
-UserHelper::userShortName();
-//"John S."
-```
-
----
-
-## `userAvatar(string $column = 'avatar', string $disk = 'public')`
-
-Returns the final URL of the avatar using the `MediaHelper` class.
-
----
-
-## `userAvatarPath(string $column = 'avatar')`
-
-Returns only the path saved in the database.
-
----
-
-## `userAvatarFallback(string $column = 'name'): array`
-
-Generates data for a fallback avatar for when the user doesn't have a photo defined.
-
-```php
-
-UserHelper::userAvatarFallback(); // John Paul
-
-// Return
-[
-    'initials' => 'JP',
-    'color' => '#3498db'
-]
-```
-
-#### Usage example on Front-End
-
-```html
-<div style="background: {{ $avatar['color'] }}">{{ $avatar['initials'] }}</div>
-```
-
----
-
-## `userEmail(string $column = 'email')`
-
-Returns the user's email.
-
----
-
-## `emailDomain(string $column = 'email')`
-
-Returns the email domain.
-
-```php
-UserHelper::emailDomain(); // "gmail.com"
-```
-
----
-
-## `maskEmail(string $email, ?int $charactersToMask = null, ?string $position = null)`
-
-Masks the email for safe display, allowing customization of **how many characters** will be masked and **where** the mask will be applied.
-
-The function is complete and allows you to define:
-
--   If **no parameters** are passed → **masks the entire email before @**
--   If `charactersToMask = 0` → **ignores the parameter and masks the entire email before @**
--   If `charactersToMask` is greater than the available size → **masks everything**
--   `position` only works when `charactersToMask > 0`
--   Possible positions:
-    -   `start` → mask at the beginning
-    -   `middle` → mask in the middle
-    -   `end` (default) → mask at the end
-
-### Examples
-
-#### 🔹 Without parameters (mask everything)
-
-```php
-UserHelper::maskEmail('myemail@gmail.com');
-// ********@gmail.com
-```
-
-#### 🔹 charactersToMask = 0 (ignore and mask everything)
-
-```php
-UserHelper::maskEmail('myemail@gmail.com', 0);
-// ********@gmail.com
-```
-
-#### 🔹 Mask at the beginning (`start`)
-
-```php
-UserHelper::maskEmail('myemailforproject@gmail.com', 4, 'start');
-// ****mailforproject@gmail.com
-```
-
-#### 🔹 Mask at the end (`end`)
-
-```php
-UserHelper::maskEmail('myemailforproject@gmail.com', 4);
-// myemailforproje****@gmail.com
-```
-
-#### 🔹 Mask in the middle (`middle`)
-
-```php
-UserHelper::maskEmail('myemailforproject@gmail.com', 4, 'middle');
-// myemailfor****ject@gmail.com
-```
-
-#### 🔹 When `charactersToMask` exceeds the limit of available characters, it will mask all available characters before `@`
-
-```php
-UserHelper::maskEmail('email@gmail.com', 10);
-// ****@gmail.com
-```
-
----
-
-## `sanitizeEmail(string $email)`
-
-Cleans an email by removing invalid characters and converting to lowercase.
-
-### Example
-
-```php
-UserHelper::sanitizeEmail(" JOAO@GMAIL.COM  ");
-// "joao@gmail.com"
-```
-
----
-
-## `userSummary()`
-
-Returns a simple array with:
-
-```php
-UserHelper::userSummary();
-
-// Return
-[
-    'id' => 1,
-    'name' => 'John Silva',
-    'email' => 'john@gmail.com'
-]
-```
-
----
-
-## `userShortSummary()`
-
-Returns a short string:
+## Example
 
 ```php
 UserHelper::userShortSummary();
-// John S. — john@gmail.com
 ```
 
----
+**Output**
 
-# Integration with `spatie/laravel-permission`
+```
+Maria S. — maria@example.com
+```
 
-If you intend to use the `spatie/laravel-permission` package that is included in this template, this helper already brings some functions to accelerate your work with it.
+## Methods
 
----
+### `userLogged`
 
-## `userHasRole(string $role): bool`
+Checks if there is an authenticated user.
 
-Checks if the user has a role.
+**Example**
 
----
+```php
+UserHelper::userLogged();
+```
 
-## `userHasPermission(string $permission): bool`
+**Output**
 
-Checks if the user has a permission.
+```
+true
+```
 
----
+### `info`
 
-## `userRoles(): array`
+Returns a direct authenticated user attribute or a fallback when the attribute does not exist.
 
-Returns an array with all of the user's roles.
+**Parameters**
 
-### Example
+| Parameter | Description |
+| --- | --- |
+| `column` | Column or direct attribute name from the User model. |
+| `default` | Value returned when there is no authenticated user or when the attribute does not exist. |
+
+**Example**
+
+```php
+UserHelper::info('name', 'Guest');
+```
+
+**Output**
+
+```
+Maria da Silva
+```
+
+### `userIsActive`
+
+Checks if a user attribute matches the value configured as active.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute that represents the user status. |
+| `activeValue` | Value considered active in the project, such as true, active, or 1. |
+
+**Example**
+
+```php
+UserHelper::userIsActive('status', 'active');
+```
+
+**Output**
+
+```
+true
+```
+
+### `userId`
+
+Returns the authenticated user identifier.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute used as identifier. |
+
+**Example**
+
+```php
+UserHelper::userId();
+```
+
+**Output**
+
+```
+1
+```
+
+### `username`
+
+Returns the authenticated user's name.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute used as name. |
+
+**Example**
+
+```php
+UserHelper::username();
+```
+
+**Output**
+
+```
+Maria da Silva
+```
+
+### `userFirstName`
+
+Returns the authenticated user's first name.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute used as name. |
+
+**Example**
+
+```php
+UserHelper::userFirstName();
+```
+
+**Output**
+
+```
+Maria
+```
+
+### `userShortName`
+
+Returns the first name with the last surname initial.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute used as name. |
+
+**Example**
+
+```php
+UserHelper::userShortName();
+```
+
+**Output**
+
+```
+Maria S.
+```
+
+### `userEmail`
+
+Returns the authenticated user's email.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute used as email. |
+
+**Example**
+
+```php
+UserHelper::userEmail();
+```
+
+**Output**
+
+```
+maria@example.com
+```
+
+### `emailDomain`
+
+Returns the authenticated user's email domain.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute used as email. |
+
+**Example**
+
+```php
+UserHelper::emailDomain();
+```
+
+**Output**
+
+```
+example.com
+```
+
+### `maskEmail`
+
+Masks the local part of an email address for safe display.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `email` | Email that will be masked. |
+| `charactersToMask` | Number of characters to mask. When null or lower than 1, masks the full part before @. |
+| `position` | Mask position. Accepts start, middle, or end. |
+
+**Example**
+
+```php
+UserHelper::maskEmail('maria.silva@example.com', 5, 'middle');
+```
+
+**Output**
+
+```
+maria*****a@example.com
+```
+
+### `sanitizeEmail`
+
+Removes invalid characters from an email and converts the result to lowercase.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `email` | Email that will be sanitized. |
+
+**Example**
+
+```php
+UserHelper::sanitizeEmail(' MARIA@example.com ');
+```
+
+**Output**
+
+```
+maria@example.com
+```
+
+### `userAvatar`
+
+Returns the public user avatar URL when the attribute exists, or a placeholder when provided.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute that stores the avatar path. |
+| `disk` | Disk configured in filesystems.php. |
+| `placeholder` | Public path used when the avatar does not exist. |
+
+**Example**
+
+```php
+UserHelper::userAvatar('avatar', 'public', 'img/placeholders/avatars/default-avatar.jpg');
+```
+
+**Output**
+
+```
+/storage/avatars/user.jpg
+```
+
+### `userAvatarPath`
+
+Returns the stored user avatar path without resolving a public URL.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute that stores the avatar path. |
+
+**Example**
+
+```php
+UserHelper::userAvatarPath();
+```
+
+**Output**
+
+```
+avatars/user.jpg
+```
+
+### `userAvatarFallback`
+
+Returns initials and a stable color for displaying a text avatar when there is no image.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `column` | Attribute used as name to generate initials. |
+
+**Example**
+
+```php
+UserHelper::userAvatarFallback();
+```
+
+**Output**
+
+```
+['initials' => 'MS', 'color' => '#3498db']
+```
+
+### `userSummary`
+
+Returns a simple array with authenticated user id, name, and email.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `id` | Attribute used as identifier. |
+| `name` | Attribute used as name. |
+| `email` | Attribute used as email. |
+
+**Example**
+
+```php
+UserHelper::userSummary();
+```
+
+**Output**
+
+```
+['id' => 1, 'name' => 'Maria da Silva', 'email' => 'maria@example.com']
+```
+
+### `userShortSummary`
+
+Returns a compact summary with abbreviated authenticated user name and email.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `name` | Attribute used as name. |
+| `email` | Attribute used as email. |
+
+**Example**
+
+```php
+UserHelper::userShortSummary();
+```
+
+**Output**
+
+```
+Maria S. — maria@example.com
+```
+
+### `userHasRole`
+
+Checks if the authenticated user has a role when HasRoles is implemented.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `role` | Role name that will be checked. |
+
+**Example**
+
+```php
+UserHelper::userHasRole('admin');
+```
+
+**Output**
+
+```
+true
+```
+
+### `userHasPermission`
+
+Checks if the authenticated user has a permission.
+
+**Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| `permission` | Permission name that will be checked. |
+
+**Example**
+
+```php
+UserHelper::userHasPermission('posts.edit');
+```
+
+**Output**
+
+```
+true
+```
+
+### `userRoles`
+
+Returns the user's role names when HasRoles is implemented.
+
+**Example**
 
 ```php
 UserHelper::userRoles();
-
-// ["admin", "editor"]
 ```
 
----
-
-## `userPermissions(): array`
-
-Returns an array of all user permissions.
+**Output**
 
 ```
+['admin', 'editor']
+```
+
+### `userPermissions`
+
+Returns all user permission names when HasRoles is implemented.
+
+**Example**
+
+```php
 UserHelper::userPermissions();
-
-// ["create", "edit", "delete"]
 ```
 
----
+**Output**
 
-## `allRoles()`
+```
+['posts.create', 'posts.edit']
+```
 
-Returns all existing permissions in the `Permission` model from _Laravel Permission_, useful for use in `selects` when assigning a role to a user.
+### `allPermissions`
 
----
+Returns all permission names registered by Spatie Permission.
 
-## `allPermissions()`
+**Example**
 
-Returns all existing roles in the `Role` model from _Laravel Permission_, useful for use in `selects` when assigning one or more permissions to a user.
+```php
+UserHelper::allPermissions();
+```
+
+**Output**
+
+```
+collect(['posts.create', 'posts.edit'])
+```
+
+### `allRoles`
+
+Returns all role names registered by Spatie Permission.
+
+**Example**
+
+```php
+UserHelper::allRoles();
+```
+
+**Output**
+
+```
+collect(['admin', 'editor'])
+```

@@ -1,288 +1,546 @@
-# 📝 **TextHelper**
+# TextHelper
 
-O **TextHelper** fornece funções utilitárias para manipulação, limpeza e normalização de textos.  
-Ele inclui recursos como truncamento, contagem de palavras, remoção de acentos, capitalização inteligente por locale e pluralização multilíngue baseada em arquivos de tradução.
+Normaliza, limita, conta, sanitiza, pluraliza e transforma textos para uso consistente na interface e nos dados da aplicação.
 
----
+## Quando Usar
 
-# 📂 Funções disponíveis
+- Use TextHelper quando strings vindas de formulários, imports, comentários ou títulos precisam ser limpas antes de exibir, salvar ou transformar.
+- Os métodos de limite, contagem e limpeza removem HTML quando isso faz sentido, evitando que tags sejam contadas como conteúdo real.
+- Os métodos de nomes e pluralização podem receber locale para respeitar conectores em português e arquivos de tradução de plurais.
+- slug() aplica o mapa de caracteres especiais antes do Str::slug(), preservando sentido em títulos com símbolos como &, $, @,
 
-## `limitByCharacters(string $text, int $limit): string`
-
-Trunca um texto para um número máximo de caracteres, adicionando reticências quando necessário.
-
-### Exemplos
+## Exemplo
 
 ```php
-TextHelper::limitByCharacters('Lorem ipsum dolor sit amet', 10);
-// "Lorem ipsu..."
+TextHelper::slug('Ke$ha & AC/DC', '-', 'en-US');
 ```
 
----
+**Saída**
 
-## `limitByWords(string $text, int $limit): string`
+```
+kesha-and-ac-dc
+```
 
-Limita o texto por quantidade de palavras.
+## Métodos
 
-### Exemplos
+### `limitByCharacters`
+
+Limita um texto pela quantidade de caracteres depois de remover tags HTML.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que será truncado. |
+| `limit` | Quantidade máxima de caracteres antes das reticências. |
+
+**Exemplo**
 
 ```php
-TextHelper::limitByWords('Lorem ipsum dolor sit amet', 3);
-// "Lorem ipsum dolor..."
+TextHelper::limitByCharacters('<p>Lorem ipsum dolor sit amet</p>', 10);
 ```
 
----
+**Saída**
 
-## `countWords(string $text): int`
+```
+Lorem ipsu...
+```
 
-Conta o número de palavras, ignorando tags HTML.
+### `limitByWords`
 
-### Exemplo
+Limita um texto pela quantidade de palavras depois de remover tags HTML.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que será truncado. |
+| `limit` | Quantidade máxima de palavras antes das reticências. |
+
+**Exemplo**
 
 ```php
-TextHelper::countWords('<p>Olá mundo!</p>');
-// 2
+TextHelper::limitByWords('<p>Lorem ipsum dolor sit amet</p>', 3);
 ```
 
----
+**Saída**
 
-## `countCharacters(string $text, bool $ignoreSpaces = false): int`
+```
+Lorem ipsum dolor...
+```
 
-Conta caracteres, com opção de ignorar espaços.
+### `countWords`
 
-### Exemplos
+Conta palavras em um texto, ignorando tags HTML e preservando palavras com acentos.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto cujas palavras serão contadas. |
+
+**Exemplo**
 
 ```php
-TextHelper::countCharacters('Olá mundo');
-// 9
-
-TextHelper::countCharacters('Olá mundo', true);
-// 8
+TextHelper::countWords('<p>Olá ação coração</p>');
 ```
 
----
+**Saída**
 
-## `removePunctuation(string $text): string`
+```
+3
+```
 
-Remove pontuações como vírgulas, pontos, exclamações, etc.
+### `countCharacters`
 
-### Exemplo
+Conta caracteres em um texto depois de remover tags HTML, com opção de ignorar espaços e quebras.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto cujos caracteres serão contados. |
+| `ignoreSpaces` | Define se espaços, tabs e quebras de linha devem ser ignorados. |
+
+**Exemplo**
 
 ```php
-TextHelper::removePunctuation('Olá, mundo! Tudo bem?');
-// "Olá mundo Tudo bem"
+TextHelper::countCharacters("Olá \n mundo", true);
 ```
 
----
+**Saída**
 
-## `stripHTML(string $text): string`
+```
+8
+```
 
-Remove todas as tags HTML.
+### `removePunctuation`
+
+Remove sinais de pontuação do texto.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto cuja pontuação será removida. |
+
+**Exemplo**
 
 ```php
-TextHelper::stripHTML('<strong>Olá</strong> mundo');
-// "Olá mundo"
+TextHelper::removePunctuation('Olá, mundo!');
 ```
 
----
+**Saída**
 
-## `cleanText(string $text): string`
+```
+Olá mundo
+```
 
-Remove espaços duplicados, quebras de linha e tabulações.
+### `stripHTML`
+
+Remove tags HTML de uma string.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que terá as tags removidas. |
+
+**Exemplo**
 
 ```php
-TextHelper::cleanText("Olá   \n   mundo");
-// "Olá mundo"
+TextHelper::stripHTML('<p>Olá <strong>mundo</strong></p>');
 ```
 
----
+**Saída**
 
-## `removeLineBreaks(string $text): string`
+```
+Olá mundo
+```
 
-Remove quebras de linha e substitui por espaço simples.
+### `cleanText`
+
+Normaliza espaços duplicados, tabs e quebras de linha em uma string.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que será limpo. |
+
+**Exemplo**
+
+```php
+TextHelper::cleanText("  Olá \n\t mundo  ");
+```
+
+**Saída**
+
+```
+Olá mundo
+```
+
+### `normalizeWhitespace`
+
+Compacta qualquer sequência de espaços em branco para um único espaço e remove espaços nas bordas.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto cujo espaçamento será normalizado. |
+
+**Exemplo**
+
+```php
+TextHelper::normalizeWhitespace("  Olá \n\t mundo  ");
+```
+
+**Saída**
+
+```
+Olá mundo
+```
+
+### `removeLineBreaks`
+
+Substitui quebras de linha por espaços.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto cujas quebras de linha serão removidas. |
+
+**Exemplo**
 
 ```php
 TextHelper::removeLineBreaks("Olá\nmundo");
-// "Olá mundo"
 ```
 
----
+**Saída**
 
-## `removeAccents(string $text): string`
+```
+Olá mundo
+```
 
-Remove acentos e normaliza caracteres especiais.
+### `removeAccents`
+
+Converte caracteres acentuados para ASCII.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto cujos acentos serão removidos. |
+
+**Exemplo**
 
 ```php
 TextHelper::removeAccents('ação');
-// "acao"
 ```
 
----
+**Saída**
 
-## `convertSpecialCharacters(string $string): string`
+```
+acao
+```
 
-Substitui caracteres especiais com base no array protegido `$specialCharMap`.
+### `convertSpecialCharacters`
 
-### Exemplo
+Substitui caracteres especiais pelo mapa fixo do helper.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que terá caracteres especiais substituídos. |
+
+**Exemplo**
 
 ```php
-TextHelper::convertSpecialCharacters('Rock & Roll');
-// "Rock and Roll"
+TextHelper::convertSpecialCharacters('Rock & Roll / 2026');
 ```
 
----
+**Saída**
 
-## `capitalizeNames(string $name, ?string $locale = null): string`
+```
+Rock and Roll - 2026
+```
 
-Capitaliza nomes respeitando conectores específicos do locale.
+### `slug`
 
-### Exemplo (pt_BR)
+Gera um slug amigável para URL, removendo HTML e convertendo caracteres especiais antes da normalização.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que será convertido em slug. |
+| `separator` | Separador usado entre as palavras do slug. |
+| `locale` | Locale usado para escolher a transliteração. |
+
+**Exemplo**
 
 ```php
-TextHelper::capitalizeNames('joão da silva');
-// "João da Silva"
+TextHelper::slug('Ke$ha & AC/DC', '-', 'en-US');
 ```
 
-### Exemplo (en_US)
+**Saída**
+
+```
+kesha-and-ac-dc
+```
+
+### `excerpt`
+
+Cria um resumo limpo de texto, removendo HTML, normalizando espaços e aplicando limite de caracteres.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que será resumido. |
+| `limit` | Quantidade máxima de caracteres antes das reticências. |
+
+**Exemplo**
 
 ```php
-TextHelper::capitalizeNames('john mcdonald', 'en_US');
-// "John Mcdonald"
+TextHelper::excerpt('<p>Ação coração brasileira</p>', 12);
 ```
 
----
+**Saída**
 
-## `sanitize(string $text): string`
+```
+Ação coração...
+```
 
-Limpa texto para uso seguro:
+### `capitalizeNames`
 
--   Remove HTML
--   Remove quebras de linha
--   Remove espaços duplicados
+Capitaliza nomes preservando conectores em minúsculo de acordo com o locale.
 
-### Exemplo
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `name` | Nome que será capitalizado. |
+| `locale` | Locale usado para resolver conectores como da, de, do, das, dos e e. |
+
+**Exemplo**
 
 ```php
-TextHelper::sanitize("<p>Olá<br> mundo</p>");
-// "Olá mundo"
+TextHelper::capitalizeNames('maria da silva e souza', 'pt-BR');
 ```
 
----
+**Saída**
 
-## `normalizeNames(string $text, ?string $locale = null): string`
+```
+Maria da Silva e Souza
+```
 
-Limpeza completa + capitalização de nomes.
+### `sanitize`
 
-### Exemplo
+Remove HTML, troca quebras de linha por espaços e normaliza espaços duplicados.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que será sanitizado. |
+
+**Exemplo**
 
 ```php
-TextHelper::normalizeNames("<p>joão   da   silva</p>");
-// "João da Silva"
+TextHelper::sanitize("<p>Olá</p>\n mundo");
 ```
 
----
+**Saída**
 
-## `onlyNumbers(string $text): string`
+```
+Olá mundo
+```
 
-Extrai apenas números de uma string.
+### `normalizeNames`
+
+Sanitiza e capitaliza um nome em uma única chamada.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Nome que será normalizado. |
+| `locale` | Locale usado para resolver conectores em minúsculo. |
+
+**Exemplo**
 
 ```php
-TextHelper::onlyNumbers('Tel: (61) 99999-0000');
-// "61999990000"
+TextHelper::normalizeNames('  maria   da silva  ', 'pt-BR');
 ```
 
----
-
-# `plural(string $string, int|array $count, ?string $locale = null): string`
-
-A função **plural()** é a mais poderosa do `TextHelper`.  
-Ela pluraliza palavras com base no idioma da aplicação, usando:
-
-1. **Pluralização inteligente via arquivos de idioma**
-2. **Fallback automático para `Str::plural()`**
-
----
-
-## 📂 Como funciona a pluralização multilíngue
-
-Você cria um arquivo:
+**Saída**
 
 ```
-resources/lang/seu_idioma/plurals.php
+Maria da Silva
 ```
 
-E adiciona apenas os plurais que quiser:
+### `firstName`
+
+Retorna o primeiro nome depois de sanitizar e capitalizar o nome completo.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `name` | Nome completo de entrada. |
+| `locale` | Locale usado para normalizar o nome antes da extração. |
+
+**Exemplo**
 
 ```php
-return [
-    'produtos' => '{1} produto|[2,*] produtos',
-    'comentarios' => '{0} nenhum comentário|{1} comentário|[2,*] comentários',
-];
+TextHelper::firstName('maria da silva', 'pt-BR');
 ```
 
----
+**Saída**
 
-### 🎯 Exemplo de uso
+```
+Maria
+```
+
+### `initials`
+
+Gera iniciais de um nome, ignorando conectores do locale quando existirem.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `name` | Nome usado para gerar as iniciais. |
+| `limit` | Quantidade máxima de iniciais retornadas. |
+| `locale` | Locale usado para ignorar conectores como da, de, do, das, dos e e. |
+
+**Exemplo**
 
 ```php
-TextHelper::plural('produtos', 1);
-// "produto"
-
-TextHelper::plural('produtos', 5);
-// "produtos"
+TextHelper::initials('maria da silva', 2, 'pt-BR');
 ```
 
----
-
-## 🌍 Suporte a múltiplos idiomas
-
-Se você tiver:
+**Saída**
 
 ```
-resources/lang/en_US/plurals.php
+MS
 ```
+
+### `onlyNumbers`
+
+Remove todos os caracteres não numéricos de uma string.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que será filtrado. |
+
+**Exemplo**
 
 ```php
-return [
-    'produtos' => '{1} product|[2,*] products',
-];
+TextHelper::onlyNumbers('(61) 99999-0000');
 ```
 
-Então:
+**Saída**
+
+```
+61999990000
+```
+
+### `emptyFallback`
+
+Retorna um fallback quando o valor é null ou uma string vazia.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `value` | Valor que seria exibido. |
+| `fallback` | Texto exibido quando o valor está vazio. |
+
+**Exemplo**
 
 ```php
-TextHelper::plural('produtos', 1, 'en_US');
-// "product"
-
-TextHelper::plural('produtos', 5, 'en_US');
-// "products"
+TextHelper::emptyFallback('', 'Indisponível');
 ```
 
----
+**Saída**
 
-## 🧠 Fallback automático
+```
+Indisponível
+```
 
-Se a palavra **não existir** no arquivo `plurals.php`:
+### `readingTime`
+
+Estima o tempo de leitura em minutos com base na quantidade de palavras.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `text` | Texto que terá as palavras contadas. |
+| `wordsPerMinute` | Quantidade de palavras por minuto usada no cálculo. |
+
+**Exemplo**
 
 ```php
-TextHelper::plural('car', 2);
-// "cars" (fallback do Str::plural)
+TextHelper::readingTime(str_repeat('palavra ', 201), 200);
 ```
 
-Nunca quebra.
+**Saída**
 
----
+```
+2
+```
 
-# Conclusão
+### `booleanLabel`
 
-O **TextHelper** oferece:
+Retorna um rótulo localizado para um valor booleano.
 
--   Limpeza e normalização de texto
--   Capitalização inteligente por idioma
--   Remoção de acentos
--   Extração de números
--   Truncamento por caracteres e palavras
--   **Pluralização multilíngue avançada**
--   Integração total com o sistema de locale da aplicação
+**Parâmetros**
 
-Ele é simples, poderoso e totalmente expansível.
+| Parâmetro | Descrição |
+| --- | --- |
+| `value` | Valor booleano que será convertido em texto. |
+| `locale` | Locale usado para escolher o rótulo. |
+
+**Exemplo**
+
+```php
+TextHelper::booleanLabel(false, 'pt-BR');
+```
+
+**Saída**
+
+```
+Não
+```
+
+### `plural`
+
+Pluraliza uma palavra ou chave de tradução usando as regras do locale quando existirem.
+
+**Parâmetros**
+
+| Parâmetro | Descrição |
+| --- | --- |
+| `string` | Palavra base ou chave definida em lang/{locale}/plurals.php. |
+| `count` | Número de itens ou array que será contado automaticamente. |
+| `locale` | Locale usado para resolver a pluralização. |
+
+**Exemplo**
+
+```php
+TextHelper::plural('comments', 2, 'pt-BR');
+```
+
+**Saída**
+
+```
+comentários
+```
