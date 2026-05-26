@@ -62,33 +62,23 @@
     }
 }
 
-/** Action Buttons **/
-[data-theme="dark"] .actions-buttons {
+/** Mobile Actions **/
+[data-theme="dark"] .mobile-actions {
     @apply border-b-gray-600;
 }
 
-[data-theme="dark"] .actions-buttons .button-item,
-[data-theme="dark"] .actions-buttons .notifications-ui-trigger,
-[data-theme="dark"] .actions-buttons > label {
+[data-theme="dark"] .mobile-action-button,
+[data-theme="dark"] .mobile-actions-panel {
     @apply border-gray-600  shadow-gray-600;
 }
 
-[data-theme="dark"] .actions-buttons .button-item:hover,
-[data-theme="dark"] .actions-buttons .notifications-ui-trigger:hover,
-[data-theme="dark"] .actions-buttons > label:hover {
+[data-theme="dark"] .mobile-action-button:hover,
+[data-theme="dark"] .mobile-action-button-active {
     @apply bg-primary cursor-pointer;
 }
 
-[data-theme="dark"] .actions-buttons .button-item:hover .badge {
+[data-theme="dark"] .mobile-action-button:hover .badge {
     @apply bg-white text-primary;
-}
-
-[data-theme="dark"] .actions-buttons ul.dropdown-content {
-    @apply shadow-gray-600 mt-1;
-}
-
-[data-theme="dark"] .actions-buttons ul.dropdown-content li a:hover {
-    @apply bg-primary;
 }
 
 /** Profile Options **/

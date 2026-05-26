@@ -43,8 +43,8 @@
 </button>
 
 @if ($showMobileActions ?? false)
-    <div class="actions-buttons">
-        <label class="swap tooltip" data-tip="{{ __('ui.switch_theme') }}">
+    <div class="mobile-actions" x-data="{ activePanel: null }">
+        <label class="mobile-action-button swap" aria-label="{{ __('ui.switch_theme') }}">
             <input type="checkbox" data-toggle-theme="dark,light" data-act-class="ACTIVECLASS" />
             <div class="swap-on"><i class="fa-regular fa-sun"></i></div>
             <div class="swap-off"><i class="fa-regular fa-moon"></i></div>
@@ -53,7 +53,7 @@
         <x-admin.notifications-ui.index
             :notifications="\App\Support\AdminNotificationsUiExamples::all()"
             modal-id="adminNotificationsMobileModal"
-            dropdown-alignment="dropdown-start" />
+            variant="mobile" />
     </div>
 @endif
 

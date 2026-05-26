@@ -2,6 +2,7 @@
     'notifications' => [],
     'modalId' => 'adminNotificationsModal',
     'dropdownAlignment' => 'dropdown-end',
+    'variant' => 'dropdown',
 ])
 
 @php
@@ -12,7 +13,30 @@
     $titleId = $modalId . 'Title';
 @endphp
 
-<div class="notifications-ui-header">
+<div @class([
+    'notifications-ui-header' => $variant !== 'mobile',
+    'mobile-action-shell mobile-action-notifications notifications-ui-mobile' => $variant === 'mobile',
+])>
+    @if ($variant === 'mobile')
+        <button type="button" class="mobile-action-button notifications-ui-trigger notifications-ui-mobile-button"
+            x-bind:class="{ 'mobile-action-button-active': activePanel === 'notifications' }"
+            x-on:click="activePanel = activePanel === 'notifications' ? null : 'notifications'"
+            x-bind:aria-expanded="activePanel === 'notifications' ? 'true' : 'false'"
+            aria-controls="{{ $modalId }}Panel"
+            aria-label="{{ __('components/notifications-ui.trigger_label') }}">
+            @if ($unreadCount > 0)
+                <span class="notifications-ui-count"
+                    aria-label="{{ trans_choice('components/notifications-ui.unread_count', $unreadCount, ['count' => $unreadCount]) }}">
+                    {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                </span>
+            @endif
+
+            <i class="fa-regular fa-bell"></i>
+        </button>
+
+        <section id="{{ $modalId }}Panel" class="mobile-actions-panel notifications-ui-mobile-panel"
+            aria-labelledby="{{ $titleId }}" x-cloak x-show="activePanel === 'notifications'" x-transition>
+    @else
     <div class="dropdown dropdown-bottom {{ $dropdownAlignment }} tooltip" data-tip="{{ __('ui.notifications') }}">
         <button type="button" tabindex="0" class="button notifications-ui-trigger"
             aria-label="{{ __('components/notifications-ui.trigger_label') }}">
@@ -28,6 +52,7 @@
 
         <section tabindex="0" class="dropdown-content notifications-ui-dropdown"
             aria-labelledby="{{ $titleId }}">
+    @endif
             <header class="notifications-ui-dropdown-header">
                 <strong id="{{ $titleId }}">{{ __('components/notifications-ui.title') }}</strong>
 
@@ -54,7 +79,10 @@
                 <span>{{ __('components/notifications-ui.backend_free') }}</span>
             </footer>
         </section>
-    </div>
+
+    @if ($variant !== 'mobile')
+        </div>
+    @endif
 
     <input type="checkbox" id="{{ $modalId }}" class="modal-toggle" />
 

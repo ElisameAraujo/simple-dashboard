@@ -3,32 +3,8 @@
     @apply relative;
 }
 
-.header .header-buttons .notifications-ui-trigger,
-.actions-buttons .notifications-ui-trigger {
+.header .header-buttons .notifications-ui-trigger {
     @apply relative flex h-12.5 min-w-12 items-center justify-center px-4 py-0;
-}
-
-.actions-buttons .notifications-ui-header,
-.actions-buttons .notifications-ui-header > .dropdown,
-.actions-buttons .notifications-ui-trigger {
-    @apply w-full;
-}
-
-.actions-buttons .notifications-ui-trigger {
-    @apply border border-gray-200 rounded-md bg-base-100 shadow transition-default;
-}
-
-.actions-buttons .notifications-ui-trigger:hover {
-    @apply bg-gray-100 cursor-pointer;
-}
-
-.actions-buttons .notifications-ui-dropdown {
-    width: min(23rem, calc(100vw - 2rem));
-}
-
-.side-menu-mobile .actions-buttons .notifications-ui-dropdown {
-    @apply left-auto right-0;
-    width: min(23rem, calc(100vw - 1.5rem));
 }
 
 .notifications-ui-count {
@@ -37,6 +13,10 @@
 
 .header .header-buttons .notifications-ui-count {
     @apply border-0 shadow-none;
+}
+
+.notifications-ui-mobile .notifications-ui-count {
+    @apply right-0 top-0 translate-x-1/2 -translate-y-1/2;
 }
 
 .notifications-ui-dropdown {
@@ -80,6 +60,10 @@
 
 .notifications-ui-list {
     @apply max-h-96;
+}
+
+.notifications-ui-mobile .notifications-ui-list {
+    @apply max-h-none;
 }
 
 .notifications-ui-item {
