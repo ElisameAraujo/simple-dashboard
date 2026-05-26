@@ -3,5 +3,5 @@
     <div class="close-b">
         <button><i class="fa-solid fa-xmark"></i></button>
     </div>
-    @include('components.admin.menu-structure')
+    @include('components.admin.menu-structure', ['showMobileActions' => true])
 </div>

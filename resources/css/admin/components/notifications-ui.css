@@ -1,0 +1,209 @@
+/** Notifications UI **/
+.notifications-ui-header {
+    @apply relative;
+}
+
+.header .header-buttons .notifications-ui-trigger,
+.actions-buttons .notifications-ui-trigger {
+    @apply relative flex h-12.5 min-w-12 items-center justify-center px-4 py-0;
+}
+
+.actions-buttons .notifications-ui-header,
+.actions-buttons .notifications-ui-header > .dropdown,
+.actions-buttons .notifications-ui-trigger {
+    @apply w-full;
+}
+
+.actions-buttons .notifications-ui-trigger {
+    @apply border border-gray-200 rounded-md bg-base-100 shadow transition-default;
+}
+
+.actions-buttons .notifications-ui-trigger:hover {
+    @apply bg-gray-100 cursor-pointer;
+}
+
+.actions-buttons .notifications-ui-dropdown {
+    width: min(23rem, calc(100vw - 2rem));
+}
+
+.side-menu-mobile .actions-buttons .notifications-ui-dropdown {
+    @apply left-auto right-0;
+    width: min(23rem, calc(100vw - 1.5rem));
+}
+
+.notifications-ui-count {
+    @apply absolute -right-1.5 -top-1.5 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white;
+}
+
+.header .header-buttons .notifications-ui-count {
+    @apply border-0 shadow-none;
+}
+
+.notifications-ui-dropdown {
+    @apply z-20 w-96 overflow-hidden rounded-md border border-gray-200 bg-base-100 p-0 shadow;
+}
+
+.notifications-ui-dropdown-header,
+.notifications-ui-dropdown-footer {
+    @apply flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 px-3 py-2;
+}
+
+.notifications-ui-dropdown-header strong {
+    @apply text-sm font-bold uppercase;
+}
+
+.notifications-ui-dropdown-header button,
+.notifications-ui-dropdown-footer button,
+.notifications-ui-dropdown-footer label {
+    @apply btn btn-xs btn-ghost rounded-md;
+}
+
+.notifications-ui-dropdown-header button:hover,
+.notifications-ui-dropdown-footer button:hover,
+.notifications-ui-dropdown-footer label:hover {
+    @apply btn-primary;
+}
+
+.notifications-ui-dropdown-footer {
+    @apply border-b-0 border-t;
+}
+
+.notifications-ui-dropdown-footer span,
+.notifications-ui-modal-footer span {
+    @apply text-xs font-semibold uppercase text-gray-400;
+}
+
+.notifications-ui-list,
+.notifications-ui-modal-list {
+    @apply flex flex-col gap-2 overflow-y-auto p-2;
+}
+
+.notifications-ui-list {
+    @apply max-h-96;
+}
+
+.notifications-ui-item {
+    @apply flex items-start gap-2 rounded-md border border-gray-200 bg-base-100 p-2 transition-default;
+}
+
+.notifications-ui-item-unread {
+    @apply border-primary/30 bg-primary/5;
+}
+
+.notifications-ui-item:hover {
+    @apply border-primary/50 shadow-sm;
+}
+
+.notifications-ui-icon {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary;
+}
+
+.notifications-ui-body {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5;
+}
+
+.notifications-ui-title-row {
+    @apply flex flex-wrap items-center justify-between gap-2;
+}
+
+.notifications-ui-title {
+    @apply text-sm font-semibold text-base-content;
+}
+
+.notifications-ui-author,
+.notifications-ui-date,
+.notifications-ui-content {
+    @apply text-xs leading-5;
+}
+
+.notifications-ui-author,
+.notifications-ui-date {
+    @apply text-gray-500;
+}
+
+.notifications-ui-content {
+    @apply line-clamp-2 text-gray-600;
+}
+
+.notifications-ui-actions {
+    @apply flex shrink-0 items-center gap-1;
+}
+
+.notifications-ui-action {
+    @apply flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 text-gray-500 transition-default;
+}
+
+.notifications-ui-action:hover {
+    @apply border-primary bg-primary text-white cursor-pointer;
+}
+
+.notifications-ui-action-success:hover {
+    @apply border-success bg-success text-white;
+}
+
+.notifications-ui-action-danger:hover {
+    @apply border-error bg-error text-white;
+}
+
+.notifications-ui-badge {
+    @apply badge badge-sm rounded-md badge-primary;
+}
+
+.notifications-ui-empty {
+    @apply flex min-h-36 flex-col items-center justify-center gap-2 px-4 py-8 text-center text-sm text-gray-500;
+}
+
+.notifications-ui-empty i,
+.notifications-ui-empty svg {
+    @apply text-2xl text-gray-400;
+}
+
+.notifications-ui-modal {
+    @apply flex max-h-[90dvh] w-[calc(100vw-2rem)] max-w-4xl flex-col overflow-hidden rounded-lg border border-gray-200 bg-base-100 p-0 shadow-xl;
+}
+
+.notifications-ui-dialog .modal-backdrop,
+.notifications-ui-dialog .modal-backdrop:hover {
+    @apply rounded-none border-0 bg-transparent p-0 text-transparent shadow-none;
+}
+
+.notifications-ui-modal-header {
+    @apply flex items-start justify-between gap-4 border-b border-gray-200 p-4;
+}
+
+.notifications-ui-modal-header h2 {
+    @apply text-xl font-bold uppercase;
+}
+
+.notifications-ui-modal-header p {
+    @apply text-sm text-gray-500;
+}
+
+.notifications-ui-modal-close {
+    @apply btn btn-sm btn-circle;
+}
+
+.notifications-ui-toolbar {
+    @apply flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 p-4;
+}
+
+.notifications-ui-filters,
+.notifications-ui-modal-actions {
+    @apply flex flex-wrap gap-1;
+}
+
+.notifications-ui-modal-list {
+    @apply flex-1 p-4;
+}
+
+.notifications-ui-item-modal {
+    @apply p-3;
+}
+
+.notifications-ui-modal-footer {
+    @apply flex justify-end border-t border-gray-200 p-4;
+}
+
+.notifications-ui-empty-modal {
+    @apply min-h-56;
+}

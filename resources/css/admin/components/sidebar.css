@@ -178,12 +178,12 @@ body.no-scroll {
         @apply border border-gray-200 py-3 px-4 rounded-md transition-default shadow flex flex-row items-center justify-center gap-2;
     }
 
-    .actions-buttons label {
+    .actions-buttons > label {
         @apply border-gray-200 border rounded-md py-2 px-4 transition-default shadow flex-row items-start;
     }
 
     .actions-buttons .button-item:hover,
-    .actions-buttons label:hover {
+    .actions-buttons > label:hover {
         @apply bg-gray-100 cursor-pointer;
     }
 

@@ -42,24 +42,20 @@
     <kbd class="kbd kbd-sm px-2">Ctrl+K</kbd>
 </button>
 
-<div class="actions-buttons">
-    <label class="swap tooltip" data-tip="{{ __('ui.switch_theme') }}">
-        <input type="checkbox" data-toggle-theme="dark,light" data-act-class="ACTIVECLASS" />
-        <div class="swap-on"><i class="fa-regular fa-sun"></i></div>
-        <div class="swap-off"><i class="fa-regular fa-moon"></i></div>
-    </label>
+@if ($showMobileActions ?? false)
+    <div class="actions-buttons">
+        <label class="swap tooltip" data-tip="{{ __('ui.switch_theme') }}">
+            <input type="checkbox" data-toggle-theme="dark,light" data-act-class="ACTIVECLASS" />
+            <div class="swap-on"><i class="fa-regular fa-sun"></i></div>
+            <div class="swap-off"><i class="fa-regular fa-moon"></i></div>
+        </label>
 
-    <div class="dropdown dropdown-bottom dropdown-end tooltip" data-tip="{{ __('ui.notifications') }}">
-        <div tabindex="0" role="button" class="button-item">
-            <i class="fa-regular fa-bell"></i>
-            <span class="indicator-item badge badge-xs rounded-sm badge-primary">2</span>
-        </div>
-        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-92 p-2 shadow-sm">
-            <li><a>Item 1</a></li>
-            <li><a>Item 2</a></li>
-        </ul>
+        <x-admin.notifications-ui.index
+            :notifications="\App\Support\AdminNotificationsUiExamples::all()"
+            modal-id="adminNotificationsMobileModal"
+            dropdown-alignment="dropdown-start" />
     </div>
-</div>
+@endif
 
 <nav class="side-menu">
     <h2 class="menu-section">Seção 1</h2>
