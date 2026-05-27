@@ -1,6 +1,7 @@
 import { themeChange } from 'theme-change';
 import { toggleSubmenu } from './submenu';
 import { toggleMenu } from './mobile-menu';
+import { daisyUIModalAnimations } from './daisyUIModalAnimations';
 
 /**
  * Axios HTTP
@@ -26,3 +27,4 @@ themeChange()
  */
 toggleSubmenu();
 toggleMenu();
+daisyUIModalAnimations();
