@@ -1,5 +1,5 @@
 body {
-    @apply bg-base-300 min-h-screen w-full;
+    @apply bg-base-300 min-h-screen w-full font-poppins;
 }
 
 .app {
