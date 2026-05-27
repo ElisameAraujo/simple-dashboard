@@ -17,4 +17,5 @@ return [
     'pause_all_notifications' => 'Pausar Todas Notificações',
     'forgot_my_password' => 'Esqueci Minha Senha',
     'delete_my_account' => 'Remover Minha Conta',
+    'dashboard' => 'Dashboard',
 ];

@@ -17,4 +17,5 @@ return [
     'pause_all_notifications' => 'Pause All Notifications',
     'forgot_my_password' => 'Forgot My Password',
     'delete_my_account' => 'Delete My Account',
+    'dashboard' => 'Dashboard',
 ];
