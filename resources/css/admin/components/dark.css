@@ -68,12 +68,14 @@
 }
 
 [data-theme="dark"] .mobile-action-button,
+[data-theme="dark"] .mobile-actions .maintenance-header-status .actions,
 [data-theme="dark"] .mobile-actions-panel {
     @apply border-gray-600  shadow-gray-600;
 }
 
 [data-theme="dark"] .mobile-action-button:hover,
-[data-theme="dark"] .mobile-action-button-active {
+[data-theme="dark"] .mobile-action-button-active,
+[data-theme="dark"] .mobile-actions .maintenance-header-status .actions:hover {
     @apply bg-primary cursor-pointer;
 }
 
@@ -105,4 +107,14 @@
 [data-theme="dark"] input:focus,
 [data-theme="dark"] input:focus-within {
     @apply border-secondary outline-secondary ring-secondary/50;
+}
+
+/** Maintenance Mode **/
+[data-theme="dark"] .maintenance-header-status .actions,
+[data-theme="dark"] .project-status {
+    @apply border-gray-600;
+}
+
+[data-theme="dark"] .maintenance-header-status .actions:hover {
+    @apply bg-gray-500 cursor-pointer;
 }

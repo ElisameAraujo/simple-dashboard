@@ -44,6 +44,10 @@
 
 @if ($showMobileActions ?? false)
     <div class="mobile-actions" x-data="{ activePanel: null }">
+        <livewire:admin.configs.maintenance-header-status
+            variant="mobile"
+            modal-id="mobile_maintenance_toggle" />
+
         <label class="mobile-action-button swap" aria-label="{{ __('ui.switch_theme') }}">
             <input type="checkbox" data-toggle-theme="dark,light" data-act-class="ACTIVECLASS" />
             <div class="swap-on"><i class="fa-regular fa-sun"></i></div>
@@ -58,10 +62,26 @@
 @endif
 
 <nav class="side-menu">
+    <h2 class="menu-section">{{ __('components/maintenance-mode.breadcrumbs.settings') }}</h2>
+    <ul>
+        <li>
+            <a @class([
+                'menu-item',
+                'active' => request()->routeIs('admin.configs.maintenance'),
+            ]) href="{{ route('admin.configs.maintenance') }}">
+                <i class="fa-solid fa-wrench"></i>
+                {{ __('components/maintenance-mode.title') }}
+            </a>
+        </li>
+    </ul>
+
     <h2 class="menu-section">Seção 1</h2>
     <ul>
         <li>
-            <a class="menu-item active" href="#">
+            <a @class([
+                'menu-item',
+                'active' => request()->routeIs('admin.dashboard'),
+            ]) href="{{ route('admin.dashboard') }}">
                 <i class="fa-solid fa-chart-line"></i>
                 Dashboard
             </a>

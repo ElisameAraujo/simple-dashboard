@@ -1,0 +1,52 @@
+/** Maintenance Mode **/
+.maintenance-header-status-header .project-status {
+    @apply hidden xl:flex;
+}
+
+.maintenance-header-status-mobile {
+    display: contents;
+}
+
+.mobile-actions .maintenance-header-status-mobile .project-status {
+    @apply col-span-2 w-full justify-center;
+}
+
+.mobile-actions .maintenance-header-status-mobile .actions {
+    @apply relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-gray-200 bg-base-100 px-4 py-0 font-semibold shadow transition-default;
+}
+
+.mobile-actions:has(.maintenance-header-status-mobile .actions) .notifications-ui-mobile-button {
+    @apply col-span-2;
+}
+
+.maintenance-header-status .actions {
+    @apply flex h-12.5 min-w-12 items-center justify-center border border-gray-200 px-4 py-0 rounded-md shadow transition-default;
+}
+
+.maintenance-header-status .actions:hover {
+    @apply bg-gray-100 cursor-pointer;
+}
+
+.project-status {
+    @apply flex w-fit items-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold uppercase;
+}
+
+.project-status.down {
+    @apply border-error/30 bg-error/10 text-error;
+}
+
+.project-status.up {
+    @apply border-success/30 bg-success/10 text-success;
+}
+
+.modal-title {
+    @apply mb-3 text-xl font-bold uppercase;
+}
+
+.modal-title.error {
+    @apply text-error;
+}
+
+.modal-title.success {
+    @apply text-success;
+}

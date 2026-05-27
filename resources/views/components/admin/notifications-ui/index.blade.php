@@ -84,6 +84,7 @@
         </div>
     @endif
 
+    @push('body-end')
     <input type="checkbox" id="{{ $modalId }}" class="modal-toggle" />
 
     <div class="modal notifications-ui-dialog" role="dialog" aria-modal="true">
@@ -144,4 +145,5 @@
             {{ __('components/notifications-ui.actions.close') }}
         </label>
     </div>
+    @endpush
 </div>

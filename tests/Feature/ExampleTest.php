@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      */
@@ -35,5 +37,9 @@ class ExampleTest extends TestCase
 
         $this->assertSame(1, substr_count($content, 'id="adminNotificationsModal"'));
         $this->assertSame(1, substr_count($content, 'id="adminNotificationsMobileModal"'));
+        $this->assertGreaterThan(
+            strpos($content, '</main>'),
+            strpos($content, 'id="adminNotificationsMobileModal"')
+        );
     }
 }

@@ -8,6 +8,7 @@ use App\Helpers\RouteHelper;
 
 RouteHelper::importRoutesFromFolder('admin', 'dashboard');
 RouteHelper::importRoutesFromFolder('admin', 'profile');
+RouteHelper::importRoutesFromFolder('admin', 'configs');
 
 /********************************************************
 | Web                                                   |

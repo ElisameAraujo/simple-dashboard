@@ -25,6 +25,7 @@
     </div>
     @livewire('livewire-ui-spotlight')
 
+    @stack('body-end')
     @livewireScripts
 </body>
 

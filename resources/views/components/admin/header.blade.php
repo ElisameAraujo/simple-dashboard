@@ -8,6 +8,8 @@
     @yield('page-header')
 
     <div class="header-buttons">
+        <livewire:admin.configs.maintenance-header-status />
+
         <label class="swap tooltip" data-tip="{{ __('ui.switch_theme') }}">
             <input type="checkbox" data-toggle-theme="dark,light" data-act-class="ACTIVECLASS" />
             <div class="swap-on"><i class="fa-regular fa-sun"></i></div>
