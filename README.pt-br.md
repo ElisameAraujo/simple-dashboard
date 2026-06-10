@@ -1,286 +1,140 @@
-<p align="center" style="display: flex; justify-content:center; gap: 10px; width: 100%">
-<img alt="Static Badge" src="https://img.shields.io/badge/Laravel%2013-version?style=plastic&logo=laravel&logoColor=white&labelColor=%23FF2D20&color=black">
-<img alt="Static Badge" src="https://img.shields.io/badge/DaisyUI%205-version?style=plastic&logo=daisyui&logoColor=white&labelColor=%231AD1A5&color=black">
-<img alt="Static Badge" src="https://img.shields.io/badge/Livewire%204-version?style=plastic&logo=livewire&logoColor=white&labelColor=%234E56A6&color=black">
-<img alt="Static Badge" src="https://img.shields.io/badge/FontAwesome%207-version?style=plastic&logo=fontawesome&logoColor=white&labelColor=%23538DD7&color=black">
-</p>
-
-<div style="display: flex; justify-content:center; gap: .4em; width: 100%">
-<a href="https://github.com/ElisameAraujo/simple-dashboard">
-Readme (English)
-</a>
-|
-<a href="https://github.com/ElisameAraujo/simple-dashboard/blob/main/README.pt-br.md">
-Readme (Português do Brasil)
-</a>
-</div>
-
 # Simple Dashboard
 
-Um painel administrativo simples, moderno e funcional, construído com:
+Simple Dashboard é uma base pronta de painel administrativo em Laravel. Ele entrega uma estrutura limpa de dashboard, helpers reutilizáveis e módulos opcionais que podem ser adaptados em projetos reais.
 
--   **Laravel 13+**
--   **Livewire 4+**
--   **Tailwind CSS 4+**
--   **DaisyUI 5+**
--   **FontAwesome 7+**
+Se você quer ver os recursos funcionando com dados fake e exemplos visuais, use o repositório separado da demo: [simple-dashboard-demo](https://github.com/ElisameAraujo/simple-dashboard-demo).
 
-O objetivo deste projeto é servir como **base inicial** para criação de dashboards, oferecendo uma estrutura limpa, organizada e com um conjunto de _helpers_ prontos para uso.
+## Stack
 
-Este projeto é fornecido **AS IS** — como está.  
-Atualizações podem ocorrer ocasionalmente, caso eu considere necessário.
+- Laravel 13
+- Livewire 4
+- Tailwind CSS 4
+- DaisyUI 5
+- FontAwesome 7
+- Vite 8
+- Setup local pronto para SQLite
 
----
+## Instalação
 
-# 🚀 Instalação Rápida
+Clone o repositório base:
 
 ```bash
 git clone https://github.com/ElisameAraujo/simple-dashboard.git
 cd simple-dashboard
+```
 
+Instale as dependências PHP e JavaScript:
+
+```bash
 composer install
 npm install
-npm run build
+```
 
+Crie o arquivo de ambiente, gere a chave da aplicação e rode as migrations:
+
+```bash
 cp .env.example .env
 php artisan key:generate
+php artisan migrate
+```
 
+Gere os assets:
+
+```bash
+npm run build
+```
+
+Inicie o ambiente local:
+
+```bash
 composer run dev
 ```
 
----
+Depois acesse:
 
-# 📦 Requisitos
-
--   **PHP 8.3+**
--   **Laravel 13+**
--   **Node 20+**
--   **Composer 2+**
-
----
-
-# 🗂 Estrutura do Projeto (Resumo)
-
-```
-.
-├── app/
-│   ├── ...
-│   ├── Helpers (Global Helpers)/
-│   │   ├── Support/
-│   │   │   └── LocaleResolver.php
-│   │   ├── DateHelper.php
-│   │   ├── DiskHelper.php
-|   |   ├── HTMLHelper.php
-│   │   ├── MediaHelper.php
-│   │   ├── NotificationHelper.php
-│   │   ├── NumberHelper.php
-│   │   ├── PaginationHelper.php
-│   │   ├── RouteHelper.php
-│   │   ├── RuleHelper.php
-│   │   ├── TextHelper.php
-│   │   └── UserHelper.php
-│   ├── ...
-│   └── Providers/
-│       ├── ...
-│       └── HelperServiceProvider.php (Service Provider for Helpers)
-├── ...
-├── config/
-│   ├── ...
-│   └── helpers.php (Helpers Registry)
-├── ...
-├── documentation/
-│   ├── en/
-│   │   ├── DateHelper.md
-│   │   ├── DiskHelper.md
-│   │   ├── HTMLHelper.md
-│   │   ├── MediaHelper.md
-│   │   ├── NotificationHelper.md
-│   │   ├── NumberHelper.md
-│   │   ├── PaginationHelper.md
-│   │   ├── RouteHelper.md
-│   │   ├── RuleHelper.md
-│   │   ├── TextHelper.md
-│   │   └── UserHelper.md
-│   └── pt-BR/
-│       ├── DateHelper.md
-│       ├── DiskHelper.md
-│       ├── HTMLHelper.md
-│       ├── MediaHelper.md
-│       ├── NotificationHelper.md
-│       ├── NumberHelper.md
-│       ├── PaginationHelper.md
-│       ├── RouteHelper.md
-│       ├── RuleHelper.md
-│       ├── TextHelper.md
-│       └── UserHelper.md
-├── lang/
-│   ├── en/
-│   │   ├── dates.php
-│   │   ├── error_messages.php
-│   │   ├── plurals.php
-│   │   └── ui.php
-│   └── pt-BR/
-│       ├── dates.php
-│       ├── error_messages.php
-│       ├── plurals.php
-│       └── ui.php
-├── ...
-├── resources/
-│   ├── css/
-│   │   ├── admin/
-│   │   │   └── components/
-│   │   │       ├── dark.css
-│   │   │       ├── header.css
-│   │   │       ├── profile-options.css
-│   │   │       └── sidebar.css
-│   │   ├── global/
-│   │   │   ├── theme.css
-│   │   │   └── utilities.css
-│   │   └── web/
-│   │       ├── style.css
-│   │       └── web.css
-│   ├── js/
-│   │   ├── admin/
-│   │   │   ├── admin.js
-│   │   │   ├── mobile-menu.js
-│   │   │   └── submenu.js
-│   │   └── web/
-│   │       └── web.js
-│   └── views/
-│       ├── admin/
-│       │   ├── dashboard/
-│       │   │   └── index.blade.php
-│       │   └── profile/
-│       │       ├── my-profile.blade.php
-│       │       ├── notifications.blade.php
-│       │       └── security.blade.php
-│       ├── components/
-│       │   └── admin/
-│       │       ├── header.blade.php
-│       │       ├── menu-structrure.blade.php
-│       │       ├── side-menu.blade-mobile.php
-│       │       └── side-menu.blade.php
-│       ├── layouts/
-│       │    └── admin.blade.php
-|       └── web/
-├── routes/
-│   ├── admin/
-│   │   ├── dashboard/
-│   │   │   └── dashboard-routes.php
-│   │   └── profile/
-│   │       └── profile-routes.php
-|   └── web/
-└── ...
+```text
+http://127.0.0.1:8000/admin
 ```
 
----
+## O Que Está Incluído
 
-# 🧰 Helpers
+### Helpers
 
-Esse projeto já tem criado uma pequena lista de helpers com funções estáticas que podem ser acessadas globalmente via `NomeDaClasse::funcao()`.
+Os helpers ficam em `app/Helpers` e são registrados em `config/helpers.php`.
 
-Você pode criar novos helpers dentro da pasta `App\Helpers` e registrá-los dentro do arquivo `config\helpers.php` na chave `global`.
+| Helper | Foco |
+| --- | --- |
+| `DateHelper` | Datas, períodos e textos relativos. |
+| `DiskHelper` | Upload, troca, remoção e geração de URL para disks Laravel. |
+| `HTMLHelper` | Geração de HTML fake para factories, previews e documentação. |
+| `MediaHelper` | Resolução, exibição, download e MIME type de mídias. |
+| `NotificationHelper` | Leitura de notificações Laravel do usuário autenticado. |
+| `NumberHelper` | Formatação de números, moedas, áreas e ordinais por locale. |
+| `PaginationHelper` | Helpers para arrays de paginação. |
+| `RouteHelper` | Importação organizada de arquivos e pastas de rotas. |
+| `RuleHelper` | Extração de valores de regras de validação Laravel. |
+| `TextHelper` | Limpeza, normalização, pluralização, slugs e textos de UI. |
+| `UserHelper` | Acesso seguro a dados básicos do usuário e extras de permissões. |
 
-Você pode conferir o que cada helper e função faz na pasta [**`/documentation`**](https://github.com/ElisameAraujo/simple-dashboard/tree/main/documentation). Lá você vai encontrar arquivos específicos para cada classe e também para as funções dentro de cada classe. Dentro das classes você também encontra comentários para as funções mais específicas.
+### Módulos
 
-Os helpers disponíveis atualmente são:
+Os módulos são blocos reutilizáveis. Esta base não inclui páginas demonstrativas para eles; consulte a pasta de documentação para ver detalhes de implementação.
 
-| Helper                 | Descrição                                    |
-| ---------------------- | -------------------------------------------- |
-| **DateHelper**         | Manipulação e formatação de datas            |
-| **DiskHelper**         | Gerenciamento de discos e caminhos           |
-| **HTMLHelper**         | Criação de HTML para factories               |
-| **MediaHelper**        | Exibição e manipulação de mídias             |
-| **NotificationHelper** | Gerenciamento de notificações do Laravel     |
-| **NumberHelper**       | Formatação numérica multilíngue              |
-| **PaginationHelper**   | Criação de paginação com múltiplas partes    |
-| **RoutesHelper**       | Importa as rotas da aplicação de forma fácil |
-| **RuleHelper**         | Extração de valores de regras ou classes DTO |
-| **TextHelper**         | Limpeza, normalização e pluralização         |
-| **UserHelper**         | Acesso rápido a dados do usuário             |
+| Módulo | Finalidade |
+| --- | --- |
+| `ImagePreview` | Preview de imagem em formulários Livewire de create e edit. |
+| `Visits` | Registro standalone de visitas Eloquent e escopos de popularidade. |
+| `Notifications UI` | Componentes visuais de notificações prontos para conectar ao backend. |
+| `Maintenance Mode` | Modo de manutenção no estilo WordPress mantendo o painel admin disponível. |
+| `Search Engine` | Busca configurável para Spotlight admin, pesquisa web, models Eloquent, itens estáticos e tabelas Livewire. |
+| `Rich Text Media` | Upload, commit, sync, limpeza e remoção de imagens embutidas em editores WYSIWYG. |
 
----
+## Documentação
 
-# 🎨 Temas (DaisyUI)
+A documentação está disponível em:
 
-Este painel utiliza o [**DaisyUI 5+**](https://daisyui.com/), que oferece suporte nativo a temas e contém uma biblioteca de [componentes](https://daisyui.com/components/) prontos para uso.
-
-🔗 **Lista de Temas Oficiais:**
-
-[https://daisyui.com/docs/themes/](https://daisyui.com/docs/themes/)
-
-🔗 **Gerador de Temas:**
-
-[https://daisyui.com/theme-generator/](https://daisyui.com/theme-generator/)
-
-Definindo um tema:
-
-```html
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
-    <head>
-        ...
-    </head>
-</html>
+```text
+documentation/en
+documentation/pt-BR
 ```
 
-Se você quiser substituir ou editar o tema atual, basta editar o arquivo `theme.css` dentro de `resources/global`.
+Docs úteis dos módulos:
 
----
+| Tópico | Inglês | Português |
+| --- | --- | --- |
+| ImagePreview | `documentation/en/ImagePreview.md` | `documentation/pt-BR/ImagePreview.md` |
+| Visits | `documentation/en/Visits.md` | `documentation/pt-BR/Visits.md` |
+| Notifications UI | `documentation/en/NotificationsUI.md` | `documentation/pt-BR/NotificationsUI.md` |
+| Maintenance Mode | `documentation/en/MaintenanceMode.md` | `documentation/pt-BR/MaintenanceMode.md` |
+| Search Engine | `documentation/en/SearchEngine.md` | `documentation/pt-BR/SearchEngine.md` |
+| Rich Text Media | `documentation/en/RichTextMedia.md` | `documentation/pt-BR/RichTextMedia.md` |
 
-# 🧩 Pacotes Inclusos
+## Validação
 
-### 📦 NPM
-
--   **[Theme Change](https://github.com/saadeghi/theme-change)** — alternância de temas com persistência via Cookie
-
-### 📦 Composer
-
--   **[Spatie Media Library](https://github.com/spatie/laravel-medialibrary)** — gerenciamento de mídias que estão ligadas as Models do Eloquent
--   **[Spatie Laravel Permission](https://github.com/spatie/laravel-permission)** — Gerenciamento de cargos e permissões
--   **[Log Viewer](https://log-viewer.opcodes.io/)** — Permite ler os seus logs do Laravel de maneira mais clara e organizada
-
----
-
-# ❓ FAQ
-
-### **Posso usar este painel em produção?**
-
-Sim, mas ele é fornecido _AS IS_. Ajuste conforme suas necessidades.
-
-### **Posso remover os pacotes que já vem instalados?**
-
-Sim, fique a vontade! O projeto base é apenas um norte na hora de você montar seu painel de administração, então se os pacotes não são necessários ou não são do seu gosto basta usar os comandos do Composer ou NPM para removê-los.
-
-### **Posso adicionar meus próprios helpers?**
-
-Sim. Basta criar em `app/Helpers` e registrar em `config/helpers.php`.
-
-### **O painel recebe atualizações frequentes?**
-
-Eu posso atualizar o projeto para ele suportar versões mais novas dos pacotes já disponíveis aqui, como também remover ou adicionar novos pacotes. Mas isso, pode ocorrer apenas ocasionalmente, caso eu ache necessário.
-
-### **Posso criar forks e variantes?**
-
-Sim, fique à vontade.
-
----
-
-# 🤝 Contribuição
-
-Contribuições são bem-vindas, especialmente para:
-
--   Traduções da interface
--   Expansão do dicionário de plurais
--   Melhorias nos helpers
--   Correções gerais
-
-Para contribuir:
+Rode a suite completa de testes:
 
 ```bash
-git checkout -b minha-melhoria
-git commit -m "Melhoria X"
-git push origin minha-melhoria
+php artisan test
 ```
 
-Depois abra um **Pull Request**.
+Gere os assets:
+
+```bash
+npm run build
+```
+
+Rode testes focados ao alterar um módulo específico:
+
+```bash
+php artisan test tests/Feature/Search
+php artisan test tests/Feature/Visits
+php artisan test tests/Feature/Media
+php artisan test --filter=MaintenanceModeTest
+```
+
+## Observações
+
+- O projeto é fornecido como base inicial. Adapte rotas, autorização, models e detalhes de UI conforme sua aplicação.
+- Modais simples de confirmação usam DaisyUI.
+- Fluxos com Livewire devem ficar em componentes Livewire quando precisam de validação ou controle de estado.
+- O repositório da demo contém exemplos visuais; este repositório mantém a implementação reutilizável limpa.
